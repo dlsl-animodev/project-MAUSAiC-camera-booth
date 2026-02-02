@@ -105,6 +105,9 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
+
+    context.translate(canvas.width, 0);
+    context.scale(-1, 1);
     context.drawImage(video, 0, 0);
 
     const photoData = canvas.toDataURL("image/jpeg");
@@ -176,7 +179,7 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
           autoPlay
           playsInline
           muted
-          className="h-96 w-96 rounded-lg border-4 border-background object-cover"
+          className="h-96 w-96 rounded-lg border-4 border-background object-cover -scale-x-100"
         />
 
         {/* Countdown Display */}
