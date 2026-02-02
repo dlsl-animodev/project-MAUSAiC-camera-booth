@@ -8,10 +8,11 @@ import { type DesignType, designs } from "./design-select";
 interface PrintPageProps {
   photos: string[];
   design: DesignType;
+  layout: "single" | "double";
   onReset: () => void;
 }
 
-export function PrintPage({ photos, design, onReset }: PrintPageProps) {
+export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
   const printRef = useRef<HTMLDivElement>(null);
   const designConfig = designs[design];
 
@@ -83,7 +84,6 @@ export function PrintPage({ photos, design, onReset }: PrintPageProps) {
       <body>
         <div class="photo-strip">
           ${photos
-            .slice(0, 4)
             .map(
               (photo, index) => `
             <div class="photo-frame">
@@ -109,13 +109,14 @@ export function PrintPage({ photos, design, onReset }: PrintPageProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Photo strip dimensions (2x6 inch at 150 DPI)
+    // Photo strip dimensions
     const stripWidth = 300;
     const photoHeight = 150;
     const padding = 16;
     const gap = 8;
     const footerHeight = 40;
-    const stripHeight = padding * 2 + photoHeight * 4 + gap * 3 + footerHeight;
+    const photoCount = photos.length;
+    const stripHeight = padding * 2 + photoHeight * photoCount + gap * (photoCount - 1) + footerHeight;
 
     canvas.width = stripWidth;
     canvas.height = stripHeight;
@@ -130,7 +131,7 @@ export function PrintPage({ photos, design, onReset }: PrintPageProps) {
     ctx.strokeRect(2, 2, stripWidth - 4, stripHeight - 4);
 
     // Load and draw photos
-    const loadImages = photos.slice(0, 4).map((src, index) => {
+    const loadImages = photos.map((src, index) => {
       return new Promise<void>((resolve) => {
         const img = new Image();
         img.crossOrigin = "anonymous";
@@ -212,7 +213,7 @@ export function PrintPage({ photos, design, onReset }: PrintPageProps) {
       >
         <CardContent className="p-0">
           <div ref={printRef} className="flex flex-col gap-2">
-            {photos.slice(0, 4).map((photo, index) => (
+            {photos.map((photo, index) => (
               <div
                 key={index}
                 className="overflow-hidden rounded-sm"
@@ -230,7 +231,7 @@ export function PrintPage({ photos, design, onReset }: PrintPageProps) {
               className="mt-2 text-center text-sm font-bold tracking-wider"
               style={{ color: designConfig.textColor }}
             >
-              📸 MAUSAiC
+              📸 PHOTO BOOTH
             </div>
           </div>
         </CardContent>

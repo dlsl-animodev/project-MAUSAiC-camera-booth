@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface LayoutSelectProps {
-  onSelectLayout: (layout: 'vertical' | 'horizontal') => void
+  onSelectLayout: (layout: "single" | "double") => void;
 }
 
 export function LayoutSelect({ onSelectLayout }: LayoutSelectProps) {
@@ -20,22 +20,23 @@ export function LayoutSelect({ onSelectLayout }: LayoutSelectProps) {
       </div>
 
       <div className="grid w-full max-w-2xl gap-6 md:grid-cols-2">
-        {/* Vertical Layout */}
+        {/* Single Strip - 4 photos */}
         <Card className="cursor-pointer border-2 transition-all hover:border-foreground">
           <CardContent className="flex flex-col items-center gap-6 p-8">
             <div className="flex flex-col gap-2">
-              <div className="h-12 w-8 rounded border-2 border-foreground" />
-              <div className="h-12 w-8 rounded border-2 border-foreground" />
-              <div className="h-12 w-8 rounded border-2 border-foreground" />
-              <div className="h-12 w-8 rounded border-2 border-foreground" />
+              <div className="h-10 w-8 rounded border-2 border-foreground" />
+              <div className="h-10 w-8 rounded border-2 border-foreground" />
+              <div className="h-10 w-8 rounded border-2 border-foreground" />
+              <div className="h-10 w-8 rounded border-2 border-foreground" />
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col items-center gap-2">
               <h3 className="text-center text-xl font-semibold text-foreground">
-                Vertical Strip
+                Single Strip
               </h3>
+              <p className="text-sm text-muted-foreground">4 photos</p>
               <Button
-                onClick={() => onSelectLayout('vertical')}
-                className="w-full"
+                onClick={() => onSelectLayout("single")}
+                className="mt-2 w-full"
               >
                 Select
               </Button>
@@ -43,22 +44,21 @@ export function LayoutSelect({ onSelectLayout }: LayoutSelectProps) {
           </CardContent>
         </Card>
 
-        {/* Horizontal Layout */}
+        {/* Short Strip - 2 photos */}
         <Card className="cursor-pointer border-2 transition-all hover:border-foreground">
           <CardContent className="flex flex-col items-center gap-6 p-8">
-            <div className="flex gap-2">
-              <div className="h-8 w-12 rounded border-2 border-foreground" />
-              <div className="h-8 w-12 rounded border-2 border-foreground" />
-              <div className="h-8 w-12 rounded border-2 border-foreground" />
-              <div className="h-8 w-12 rounded border-2 border-foreground" />
+            <div className="flex flex-col gap-2">
+              <div className="h-10 w-8 rounded border-2 border-foreground" />
+              <div className="h-10 w-8 rounded border-2 border-foreground" />
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col items-center gap-2">
               <h3 className="text-center text-xl font-semibold text-foreground">
-                Horizontal Strip
+                Short Strip
               </h3>
+              <p className="text-sm text-muted-foreground">2 photos</p>
               <Button
-                onClick={() => onSelectLayout('horizontal')}
-                className="w-full"
+                onClick={() => onSelectLayout("double")}
+                className="mt-2 w-full"
               >
                 Select
               </Button>
@@ -67,5 +67,5 @@ export function LayoutSelect({ onSelectLayout }: LayoutSelectProps) {
         </Card>
       </div>
     </div>
-  )
+  );
 }

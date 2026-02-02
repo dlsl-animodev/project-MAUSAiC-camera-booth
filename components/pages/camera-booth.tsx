@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 interface CameraBoothProps {
-  layout: "vertical" | "horizontal";
+  layout: "single" | "double";
   onPhotosCapture: (photos: string[]) => void;
 }
 
@@ -55,11 +55,13 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
     }
   }, [permission]);
 
+  const maxPhotos = layout === "single" ? 4 : 2;
+
   // Auto capture every 3 seconds when capturing
   useEffect(() => {
     if (!isCapturing) return;
 
-    if (photoCount >= 4) {
+    if (photoCount >= maxPhotos) {
       setIsCapturing(false);
       return;
     }
@@ -81,12 +83,12 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
     return () => clearInterval(countdownInterval);
   }, [isCapturing, photoCount]);
 
-  // Handle completion when we have 4 photos
+  // Handle completion when we have required photos
   useEffect(() => {
-    if (photos.length === 4 && !isCapturing) {
+    if (photos.length === maxPhotos && !isCapturing) {
       onPhotosCapture(photos);
     }
-  }, [photos, isCapturing, onPhotosCapture]);
+  }, [photos, isCapturing, onPhotosCapture, maxPhotos]);
 
   const capturePhoto = () => {
     if (!videoRef.current || !canvasRef.current) return;
@@ -190,7 +192,7 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
 
         {/* Photo Counter */}
         <div className="text-2xl font-bold text-background">
-          Photos: {photos.length} / 4
+          Photos: {photos.length} / {maxPhotos}
         </div>
       </div>
 

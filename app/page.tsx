@@ -15,7 +15,7 @@ type AppPage = "home" | "layout" | "camera" | "customize" | "design" | "print";
 
 interface CameraState {
   photos: string[];
-  layout: "vertical" | "horizontal";
+  layout: "single" | "double";
   design: DesignType;
 }
 
@@ -23,7 +23,7 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState<AppPage>("home");
   const [cameraState, setCameraState] = useState<CameraState>({
     photos: [],
-    layout: "vertical",
+    layout: "single",
     design: "classic",
   });
 
@@ -31,7 +31,7 @@ export default function Page() {
     setCurrentPage("layout");
   };
 
-  const handleLayoutSelect = (layout: "vertical" | "horizontal") => {
+  const handleLayoutSelect = (layout: "single" | "double") => {
     setCameraState((prev) => ({ ...prev, layout }));
     setCurrentPage("camera");
   };
@@ -54,7 +54,7 @@ export default function Page() {
     setCurrentPage("home");
     setCameraState({
       photos: [],
-      layout: "vertical",
+      layout: "single",
       design: "classic",
     });
   };
@@ -89,6 +89,7 @@ export default function Page() {
         <PrintPage
           photos={cameraState.photos}
           design={cameraState.design}
+          layout={cameraState.layout}
           onReset={handleReset}
         />
       )}

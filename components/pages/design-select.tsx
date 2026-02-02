@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 interface DesignSelectProps {
   photos: string[];
-  layout: "vertical" | "horizontal";
+  layout: "single" | "double";
   onComplete: (design: DesignType) => void;
 }
 
@@ -103,7 +103,7 @@ export function DesignSelect({
       >
         <CardContent className="p-0">
           <div className="flex flex-col gap-2">
-            {photos.slice(0, 4).map((photo, index) => (
+            {photos.map((photo, index) => (
               <div
                 key={index}
                 className="overflow-hidden rounded-sm"
