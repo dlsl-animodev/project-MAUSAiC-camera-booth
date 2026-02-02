@@ -41,7 +41,8 @@ export default function Page() {
     setCurrentPage("customize");
   };
 
-  const handleCustomizeComplete = () => {
+  const handleCustomizeComplete = (filteredPhotos: string[]) => {
+    setCameraState((prev) => ({ ...prev, photos: filteredPhotos }));
     setCurrentPage("design");
   };
 

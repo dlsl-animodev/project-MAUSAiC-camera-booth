@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
 
 interface PhotoCustomizeProps {
   photos: string[];
   layout: "single" | "double";
-  onComplete: () => void;
+  onComplete: (filteredPhotos: string[]) => void;
 }
 
 type FilterType =
@@ -33,12 +32,59 @@ const filters: Record<FilterType, FilterConfig> = {
   contrast: { filter: "contrast(1.3)", label: "Vivid" },
 };
 
+// Apply filter to image using canvas
+const applyFilterToImage = (
+  imageSrc: string,
+  filterValue: string
+): Promise<string> => {
+  return new Promise((resolve) => {
+    if (!filterValue) {
+      resolve(imageSrc);
+      return;
+    }
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        resolve(imageSrc);
+        return;
+      }
+
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.filter = filterValue;
+      ctx.drawImage(img, 0, 0);
+
+      resolve(canvas.toDataURL("image/jpeg", 0.9));
+    };
+    img.onerror = () => resolve(imageSrc);
+    img.src = imageSrc;
+  });
+};
+
 export function PhotoCustomize({
   photos,
   layout,
   onComplete,
 }: PhotoCustomizeProps) {
   const [selectedFilter, setSelectedFilter] = useState<FilterType>("none");
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleContinue = async () => {
+    setIsProcessing(true);
+    const filterValue = filters[selectedFilter].filter;
+    
+    // Apply filter to all photos
+    const filteredPhotos = await Promise.all(
+      photos.map((photo) => applyFilterToImage(photo, filterValue))
+    );
+    
+    setIsProcessing(false);
+    onComplete(filteredPhotos);
+  };
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center gap-8 bg-background px-4 py-8">
@@ -105,11 +151,16 @@ export function PhotoCustomize({
           onClick={() => setSelectedFilter("none")}
           variant="outline"
           className="flex-1"
+          disabled={isProcessing}
         >
           Reset
         </Button>
-        <Button onClick={onComplete} className="flex-1">
-          Continue to Print
+        <Button 
+          onClick={handleContinue} 
+          className="flex-1"
+          disabled={isProcessing}
+        >
+          {isProcessing ? "Processing..." : "Continue to Print"}
         </Button>
       </div>
     </div>
