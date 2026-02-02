@@ -35,7 +35,7 @@ const filters: Record<FilterType, FilterConfig> = {
 // Apply filter to image using canvas
 const applyFilterToImage = (
   imageSrc: string,
-  filterValue: string
+  filterValue: string,
 ): Promise<string> => {
   return new Promise((resolve) => {
     if (!filterValue) {
@@ -76,12 +76,12 @@ export function PhotoCustomize({
   const handleContinue = async () => {
     setIsProcessing(true);
     const filterValue = filters[selectedFilter].filter;
-    
+
     // Apply filter to all photos
     const filteredPhotos = await Promise.all(
-      photos.map((photo) => applyFilterToImage(photo, filterValue))
+      photos.map((photo) => applyFilterToImage(photo, filterValue)),
     );
-    
+
     setIsProcessing(false);
     onComplete(filteredPhotos);
   };
@@ -155,8 +155,8 @@ export function PhotoCustomize({
         >
           Reset
         </Button>
-        <Button 
-          onClick={handleContinue} 
+        <Button
+          onClick={handleContinue}
           className="flex-1"
           disabled={isProcessing}
         >

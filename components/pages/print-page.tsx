@@ -104,95 +104,6 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
     }, 500);
   };
 
-  const handleDownload = () => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Photo strip dimensions
-    const stripWidth = 300;
-    const photoHeight = 150;
-    const padding = 16;
-    const gap = 8;
-    const footerHeight = 40;
-    const photoCount = photos.length;
-    const stripHeight = padding * 2 + photoHeight * photoCount + gap * (photoCount - 1) + footerHeight;
-
-    canvas.width = stripWidth;
-    canvas.height = stripHeight;
-
-    // Background
-    ctx.fillStyle = designConfig.backgroundColor;
-    ctx.fillRect(0, 0, stripWidth, stripHeight);
-
-    // Border
-    ctx.strokeStyle = designConfig.borderColor;
-    ctx.lineWidth = 4;
-    ctx.strokeRect(2, 2, stripWidth - 4, stripHeight - 4);
-
-    // Load and draw photos
-    const loadImages = photos.map((src, index) => {
-      return new Promise<void>((resolve) => {
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => {
-          const y = padding + index * (photoHeight + gap);
-          const photoWidth = stripWidth - padding * 2;
-
-          // Draw photo border
-          ctx.strokeStyle = designConfig.borderColor;
-          ctx.lineWidth = 2;
-          ctx.strokeRect(padding - 1, y - 1, photoWidth + 2, photoHeight + 2);
-
-          // Draw photo (cover fit)
-          const aspectRatio = img.width / img.height;
-          const targetAspect = photoWidth / photoHeight;
-          let sx = 0,
-            sy = 0,
-            sw = img.width,
-            sh = img.height;
-
-          if (aspectRatio > targetAspect) {
-            sw = img.height * targetAspect;
-            sx = (img.width - sw) / 2;
-          } else {
-            sh = img.width / targetAspect;
-            sy = (img.height - sh) / 2;
-          }
-
-          ctx.drawImage(
-            img,
-            sx,
-            sy,
-            sw,
-            sh,
-            padding,
-            y,
-            photoWidth,
-            photoHeight,
-          );
-          resolve();
-        };
-        img.onerror = () => resolve();
-        img.src = src;
-      });
-    });
-
-    Promise.all(loadImages).then(() => {
-      // Footer text
-      ctx.fillStyle = designConfig.textColor;
-      ctx.font = "bold 14px Arial";
-      ctx.textAlign = "center";
-      ctx.fillText("📸 PHOTO BOOTH", stripWidth / 2, stripHeight - padding);
-
-      // Download
-      const link = document.createElement("a");
-      link.download = "photo-strip.png";
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    });
-  };
-
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center gap-8 bg-background px-4 py-8">
       {/* Title */}
@@ -248,15 +159,6 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
         </Button>
 
         <Button
-          onClick={handleDownload}
-          size="lg"
-          variant="secondary"
-          className="h-12 flex-1 text-base font-semibold"
-        >
-          📥 Download
-        </Button>
-
-        <Button
           onClick={onReset}
           variant="outline"
           size="lg"
@@ -269,7 +171,7 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
       {/* Info */}
       <div className="text-center text-sm text-muted-foreground">
         <p>Your photo strip is ready!</p>
-        <p>Print or download to save your memories</p>
+        <p>Print to save your memories</p>
       </div>
     </div>
   );
