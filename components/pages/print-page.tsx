@@ -1,9 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { type DesignType, designs } from "./design-select";
+import { QRCodeSVG } from "qrcode.react";
+import { uploadPhotoStrip } from "@/lib/supabase";
 
 interface PrintPageProps {
   photos: string[];
@@ -15,6 +17,138 @@ interface PrintPageProps {
 export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
   const printRef = useRef<HTMLDivElement>(null);
   const designConfig = designs[design];
+  const [downloadUrl, setDownloadUrl] = useState<string>("");
+  const [isGenerating, setIsGenerating] = useState(true);
+  const [uploadError, setUploadError] = useState<string>("");
+
+  // Generate photo strip image and upload to Supabase
+  useEffect(() => {
+    const generateAndUploadPhotoStrip = async () => {
+      setIsGenerating(true);
+      setUploadError("");
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      const stripWidth = 400;
+      const photoHeight = 200;
+      const padding = 20;
+      const gap = 10;
+      const footerHeight = 50;
+      const photoCount = photos.length;
+      const stripHeight =
+        padding * 2 +
+        photoHeight * photoCount +
+        gap * (photoCount - 1) +
+        footerHeight;
+
+      canvas.width = stripWidth;
+      canvas.height = stripHeight;
+
+      // Background
+      ctx.fillStyle = designConfig.backgroundColor;
+      ctx.fillRect(0, 0, stripWidth, stripHeight);
+
+      // Border
+      ctx.strokeStyle = designConfig.borderColor;
+      ctx.lineWidth = 6;
+      ctx.strokeRect(3, 3, stripWidth - 6, stripHeight - 6);
+
+      // Load and draw photos
+      const loadImages = photos.map((src, index) => {
+        return new Promise<void>((resolve) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => {
+            const y = padding + index * (photoHeight + gap);
+            const photoWidth = stripWidth - padding * 2;
+
+            // Draw photo border
+            ctx.strokeStyle = designConfig.borderColor;
+            ctx.lineWidth = 3;
+            ctx.strokeRect(padding - 1, y - 1, photoWidth + 2, photoHeight + 2);
+
+            // Draw photo (cover fit)
+            const aspectRatio = img.width / img.height;
+            const targetAspect = photoWidth / photoHeight;
+            let sx = 0,
+              sy = 0,
+              sw = img.width,
+              sh = img.height;
+
+            if (aspectRatio > targetAspect) {
+              sw = img.height * targetAspect;
+              sx = (img.width - sw) / 2;
+            } else {
+              sh = img.width / targetAspect;
+              sy = (img.height - sh) / 2;
+            }
+
+            ctx.drawImage(
+              img,
+              sx,
+              sy,
+              sw,
+              sh,
+              padding,
+              y,
+              photoWidth,
+              photoHeight,
+            );
+            resolve();
+          };
+          img.onerror = () => resolve();
+          img.src = src;
+        });
+      });
+
+      await Promise.all(loadImages);
+
+      // Footer text
+      ctx.fillStyle = designConfig.textColor;
+      ctx.font = "bold 18px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("📸 MAUSAiC", stripWidth / 2, stripHeight - padding);
+
+      // Convert to blob and upload to Supabase
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          try {
+            const publicUrl = await uploadPhotoStrip(blob);
+            if (publicUrl) {
+              setDownloadUrl(publicUrl);
+            } else {
+              setUploadError("Failed to upload. Try downloading directly.");
+              // Fallback to local blob URL
+              setDownloadUrl(URL.createObjectURL(blob));
+            }
+          } catch (error) {
+            console.error("Upload error:", error);
+            setUploadError("Failed to upload. Try downloading directly.");
+            setDownloadUrl(URL.createObjectURL(blob));
+          }
+          setIsGenerating(false);
+        }
+      }, "image/png");
+    };
+
+    generateAndUploadPhotoStrip();
+
+    return () => {
+      if (downloadUrl) {
+        URL.revokeObjectURL(downloadUrl);
+      }
+    };
+  }, [photos, designConfig]);
+
+  const handleDownload = () => {
+    if (!downloadUrl) return;
+    const link = document.createElement("a");
+    link.download = "photo-strip.png";
+    link.href = downloadUrl;
+    link.click();
+  };
 
   const handlePrint = () => {
     if (!printRef.current) return;
@@ -26,7 +160,7 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Photo Booth Strip</title>
+        <title>MAUSAiC Photo Strip</title>
         <style>
           * {
             margin: 0;
@@ -148,6 +282,41 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
         </CardContent>
       </Card>
 
+      {/* QR Code Section */}
+      <div className="flex flex-col items-center gap-3">
+        <h3 className="text-lg font-semibold text-foreground">
+          Scan to Download
+        </h3>
+        {isGenerating ? (
+          <div className="flex h-32 w-32 items-center justify-center rounded-lg bg-muted">
+            <p className="text-sm text-muted-foreground">Uploading...</p>
+          </div>
+        ) : downloadUrl ? (
+          <div className="rounded-lg bg-white p-3">
+            <QRCodeSVG
+              value={downloadUrl}
+              size={128}
+              level="M"
+              includeMargin={false}
+            />
+          </div>
+        ) : null}
+        {uploadError && (
+          <p className="text-xs text-red-500 text-center">{uploadError}</p>
+        )}
+        <p className="text-xs text-muted-foreground text-center max-w-xs">
+          Scan with your phone camera to download the photo strip
+        </p>
+        <Button
+          onClick={handleDownload}
+          variant="secondary"
+          size="sm"
+          disabled={!downloadUrl}
+        >
+          📥 Download Directly
+        </Button>
+      </div>
+
       {/* Action Buttons */}
       <div className="flex w-full max-w-md flex-col gap-3 md:flex-row md:gap-4">
         <Button
@@ -166,12 +335,6 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
         >
           🔄 Start Over
         </Button>
-      </div>
-
-      {/* Info */}
-      <div className="text-center text-sm text-muted-foreground">
-        <p>Your photo strip is ready!</p>
-        <p>Print to save your memories</p>
       </div>
     </div>
   );
