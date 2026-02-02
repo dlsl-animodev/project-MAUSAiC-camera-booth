@@ -1,127 +1,196 @@
-'use client'
+"use client";
 
-import { useRef } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { type DesignType, designs } from "./design-select";
 
 interface PrintPageProps {
-  photos: string[]
-  onReset: () => void
+  photos: string[];
+  design: DesignType;
+  onReset: () => void;
 }
 
-export function PrintPage({ photos, onReset }: PrintPageProps) {
-  const printRef = useRef<HTMLDivElement>(null)
+export function PrintPage({ photos, design, onReset }: PrintPageProps) {
+  const printRef = useRef<HTMLDivElement>(null);
+  const designConfig = designs[design];
 
   const handlePrint = () => {
-    if (!printRef.current) return
+    if (!printRef.current) return;
 
-    const printWindow = window.open('', '', 'height=600,width=800')
-    if (!printWindow) return
+    const printWindow = window.open("", "", "height=800,width=400");
+    if (!printWindow) return;
 
-    const printContent = printRef.current.innerHTML
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Snap Booth Print</title>
+        <title>Photo Booth Strip</title>
         <style>
-          body {
+          * {
             margin: 0;
-            padding: 20px;
-            background: white;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          body {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-          }
-          .print-container {
-            background: white;
-            padding: 40px;
-            border: 3px solid black;
+            background: #f0f0f0;
+            padding: 20px;
           }
           .photo-strip {
+            background: ${designConfig.backgroundColor};
+            border: 4px solid ${designConfig.borderColor};
+            padding: 16px;
+            width: 280px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 8px;
           }
-          .photo-strip img {
-            width: 200px;
-            height: auto;
-            border: 2px solid black;
-            border-radius: 8px;
+          .photo-frame {
+            border: 2px solid ${designConfig.borderColor};
+            border-radius: 4px;
+            overflow: hidden;
+          }
+          .photo-frame img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            display: block;
           }
           .footer {
             text-align: center;
-            margin-top: 40px;
+            margin-top: 8px;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 14px;
             letter-spacing: 2px;
+            color: ${designConfig.textColor};
+            font-family: Arial, sans-serif;
           }
           @media print {
             body {
+              background: white;
               padding: 0;
+            }
+            .photo-strip {
+              margin: 0 auto;
             }
           }
         </style>
       </head>
       <body>
-        <div class="print-container">
-          ${printContent}
-          <div class="footer">SNAP BOOTH</div>
+        <div class="photo-strip">
+          ${photos
+            .slice(0, 4)
+            .map(
+              (photo, index) => `
+            <div class="photo-frame">
+              <img src="${photo}" alt="Photo ${index + 1}" />
+            </div>
+          `,
+            )
+            .join("")}
+          <div class="footer">📸 PHOTO BOOTH</div>
         </div>
       </body>
       </html>
-    `)
-    printWindow.document.close()
+    `);
+    printWindow.document.close();
 
     setTimeout(() => {
-      printWindow.print()
-    }, 250)
-  }
+      printWindow.print();
+    }, 500);
+  };
 
   const handleDownload = () => {
-    if (!printRef.current) return
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
+    // Photo strip dimensions (2x6 inch at 150 DPI)
+    const stripWidth = 300;
+    const photoHeight = 150;
+    const padding = 16;
+    const gap = 8;
+    const footerHeight = 40;
+    const stripHeight = padding * 2 + photoHeight * 4 + gap * 3 + footerHeight;
 
-    // Set canvas size based on content
-    canvas.width = 400
-    canvas.height = 200 * photos.length + 100
+    canvas.width = stripWidth;
+    canvas.height = stripHeight;
 
-    // White background
-    ctx.fillStyle = 'white'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    // Background
+    ctx.fillStyle = designConfig.backgroundColor;
+    ctx.fillRect(0, 0, stripWidth, stripHeight);
 
-    // Draw photos
-    const photoSize = 200
-    const gap = 16
+    // Border
+    ctx.strokeStyle = designConfig.borderColor;
+    ctx.lineWidth = 4;
+    ctx.strokeRect(2, 2, stripWidth - 4, stripHeight - 4);
 
-    photos.forEach((photo, index) => {
-      const img = new window.Image()
-      img.crossOrigin = 'anonymous'
-      img.onload = () => {
-        const y = index * (photoSize + gap) + 50
-        ctx.drawImage(img, 100, y, photoSize, photoSize)
+    // Load and draw photos
+    const loadImages = photos.slice(0, 4).map((src, index) => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          const y = padding + index * (photoHeight + gap);
+          const photoWidth = stripWidth - padding * 2;
 
-        if (index === photos.length - 1) {
-          // Add footer text
-          ctx.fillStyle = 'black'
-          ctx.font = 'bold 20px Arial'
-          ctx.textAlign = 'center'
-          ctx.fillText('SNAP BOOTH', canvas.width / 2, canvas.height - 20)
+          // Draw photo border
+          ctx.strokeStyle = designConfig.borderColor;
+          ctx.lineWidth = 2;
+          ctx.strokeRect(padding - 1, y - 1, photoWidth + 2, photoHeight + 2);
 
-          // Download
-          const link = document.createElement('a')
-          link.href = canvas.toDataURL('image/png')
-          link.download = 'snap-booth.png'
-          link.click()
-        }
-      }
-      img.src = photo
-    })
-  }
+          // Draw photo (cover fit)
+          const aspectRatio = img.width / img.height;
+          const targetAspect = photoWidth / photoHeight;
+          let sx = 0,
+            sy = 0,
+            sw = img.width,
+            sh = img.height;
+
+          if (aspectRatio > targetAspect) {
+            sw = img.height * targetAspect;
+            sx = (img.width - sw) / 2;
+          } else {
+            sh = img.width / targetAspect;
+            sy = (img.height - sh) / 2;
+          }
+
+          ctx.drawImage(
+            img,
+            sx,
+            sy,
+            sw,
+            sh,
+            padding,
+            y,
+            photoWidth,
+            photoHeight,
+          );
+          resolve();
+        };
+        img.onerror = () => resolve();
+        img.src = src;
+      });
+    });
+
+    Promise.all(loadImages).then(() => {
+      // Footer text
+      ctx.fillStyle = designConfig.textColor;
+      ctx.font = "bold 14px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("📸 PHOTO BOOTH", stripWidth / 2, stripHeight - padding);
+
+      // Download
+      const link = document.createElement("a");
+      link.download = "photo-strip.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+  };
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center gap-8 bg-background px-4 py-8">
@@ -130,36 +199,45 @@ export function PrintPage({ photos, onReset }: PrintPageProps) {
         <h1 className="text-balance text-center text-4xl font-bold text-foreground md:text-5xl">
           Your Photo Strip
         </h1>
-        <p className="text-muted-foreground">
-          Ready to print or download your memories
-        </p>
+        <p className="text-muted-foreground">Ready to print your memories</p>
       </div>
 
       {/* Print Preview */}
-      <Card className="w-full max-w-lg border-4 border-foreground bg-foreground p-8">
+      <Card
+        className="w-full max-w-xs border-4 p-4"
+        style={{
+          borderColor: designConfig.borderColor,
+          backgroundColor: designConfig.backgroundColor,
+        }}
+      >
         <CardContent className="p-0">
-          <div
-            ref={printRef}
-            className="flex flex-col items-center gap-4 bg-white"
-          >
-            {photos.map((photo, index) => (
+          <div ref={printRef} className="flex flex-col gap-2">
+            {photos.slice(0, 4).map((photo, index) => (
               <div
                 key={index}
-                className="w-48 overflow-hidden rounded-lg border-2 border-foreground"
+                className="overflow-hidden rounded-sm"
+                style={{ border: `2px solid ${designConfig.borderColor}` }}
               >
                 <img
                   src={photo || "/placeholder.svg"}
                   alt={`Photo ${index + 1}`}
-                  className="h-48 w-full object-cover"
+                  className="aspect-[4/3] w-full object-cover"
                 />
               </div>
             ))}
+            {/* Footer text */}
+            <div
+              className="mt-2 text-center text-sm font-bold tracking-wider"
+              style={{ color: designConfig.textColor }}
+            >
+              📸 MAUSAiC
+            </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Action Buttons */}
-      <div className="flex w-full max-w-2xl flex-col gap-3 md:flex-row md:gap-4">
+      <div className="flex w-full max-w-md flex-col gap-3 md:flex-row md:gap-4">
         <Button
           onClick={handlePrint}
           size="lg"
@@ -167,28 +245,31 @@ export function PrintPage({ photos, onReset }: PrintPageProps) {
         >
           🖨️ Print
         </Button>
+
         <Button
           onClick={handleDownload}
           size="lg"
+          variant="secondary"
           className="h-12 flex-1 text-base font-semibold"
         >
-          ⬇️ Download
+          📥 Download
         </Button>
+
         <Button
           onClick={onReset}
           variant="outline"
           size="lg"
           className="h-12 flex-1 text-base font-semibold bg-transparent"
         >
-          🔄 New Photos
+          🔄 Start Over
         </Button>
       </div>
 
       {/* Info */}
       <div className="text-center text-sm text-muted-foreground">
         <p>Your photo strip is ready!</p>
-        <p>Click Print to print directly or Download to save as image</p>
+        <p>Print or download to save your memories</p>
       </div>
     </div>
-  )
+  );
 }

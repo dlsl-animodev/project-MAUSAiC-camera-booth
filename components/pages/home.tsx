@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 
 interface HomeProps {
-  onStart: () => void
+  onStart: () => void;
 }
 
 export function Home({ onStart }: HomeProps) {
@@ -23,7 +23,7 @@ export function Home({ onStart }: HomeProps) {
           </div>
         </div>
         <h1 className="text-balance text-center text-5xl font-bold text-foreground md:text-6xl">
-          Snap Booth
+          MAUSAiC-camera-booth
         </h1>
         <p className="text-balance text-center text-lg text-muted-foreground">
           Create beautiful photo strips instantly
@@ -41,5 +41,5 @@ export function Home({ onStart }: HomeProps) {
         </Button>
       </div>
     </div>
-  )
+  );
 }
