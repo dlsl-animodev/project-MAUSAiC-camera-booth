@@ -1,14 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface PhotoCustomizeProps {
   photos: string[];
   layout: "single" | "double";
   onComplete: (filteredPhotos: string[]) => void;
 }
+
+// Floating bubble component
+const FloatingBubble = ({
+  size,
+  position,
+  delay,
+  animation,
+}: {
+  size: number;
+  position: { top?: string; bottom?: string; left?: string; right?: string };
+  delay: string;
+  animation: string;
+}) => (
+  <div
+    className={`absolute rounded-full bg-black/5 dark:bg-white/5 backdrop-blur-sm ${animation}`}
+    style={{
+      width: size,
+      height: size,
+      ...position,
+      animationDelay: delay,
+    }}
+  />
+);
 
 type FilterType =
   | "none"
@@ -21,15 +42,16 @@ type FilterType =
 interface FilterConfig {
   filter: string;
   label: string;
+  emoji: string;
 }
 
 const filters: Record<FilterType, FilterConfig> = {
-  none: { filter: "", label: "Original" },
-  grayscale: { filter: "grayscale(100%)", label: "Grayscale" },
-  sepia: { filter: "sepia(100%)", label: "Sepia" },
-  invert: { filter: "invert(100%)", label: "Invert" },
-  brightness: { filter: "brightness(1.2)", label: "Bright" },
-  contrast: { filter: "contrast(1.3)", label: "Vivid" },
+  none: { filter: "", label: "Original", emoji: "✨" },
+  grayscale: { filter: "grayscale(100%)", label: "B&W", emoji: "🖤" },
+  sepia: { filter: "sepia(100%)", label: "Sepia", emoji: "🤎" },
+  invert: { filter: "invert(100%)", label: "Invert", emoji: "🔄" },
+  brightness: { filter: "brightness(1.2)", label: "Bright", emoji: "☀️" },
+  contrast: { filter: "contrast(1.3)", label: "Vivid", emoji: "💎" },
 };
 
 // Apply filter to image using canvas
@@ -87,25 +109,56 @@ export function PhotoCustomize({
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center gap-8 bg-background px-4 py-8">
-      {/* Title */}
-      <div className="flex flex-col items-center gap-2">
-        <h1 className="text-balance text-center text-4xl font-bold text-foreground md:text-5xl">
-          Customize Your Strip
-        </h1>
-        <p className="text-muted-foreground">
-          Choose a filter and finalize your photos
-        </p>
+    <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white dark:bg-black px-6">
+      {/* Floating Bubbles Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <FloatingBubble
+          size={300}
+          position={{ top: "-5%", left: "-5%" }}
+          delay="0s"
+          animation="animate-float-bubble"
+        />
+        <FloatingBubble
+          size={200}
+          position={{ top: "30%", right: "-5%" }}
+          delay="1.5s"
+          animation="animate-float-bubble-reverse"
+        />
+        <FloatingBubble
+          size={150}
+          position={{ bottom: "5%", left: "5%" }}
+          delay="0.5s"
+          animation="animate-float-bubble-slow"
+        />
+        <FloatingBubble
+          size={180}
+          position={{ bottom: "20%", right: "10%" }}
+          delay="2s"
+          animation="animate-float-bubble"
+        />
       </div>
 
-      {/* Photo Strip Preview */}
-      <Card className="border-2 border-foreground bg-foreground p-4">
-        <CardContent className="p-0">
-          <div className="flex flex-col gap-2 w-32 md:w-40 mx-auto">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/[0.02] to-black/[0.05] dark:from-transparent dark:via-white/[0.02] dark:to-white/[0.05] pointer-events-none" />
+
+      <div className="relative z-10 flex flex-col items-center gap-5 w-full">
+        {/* Title */}
+        <div className="flex flex-col items-center gap-1">
+          <h1 className="animate-fade-in-up text-center text-3xl font-semibold tracking-tight text-black dark:text-white md:text-4xl">
+            Add Filter
+          </h1>
+          <p className="animate-fade-in-up-delay-1 text-xs font-light tracking-wide text-black/50 dark:text-white/50">
+            Enhance your photos
+          </p>
+        </div>
+
+        {/* Photo Strip Preview */}
+        <div className="animate-fade-in-up-delay-2 relative rounded-xl bg-black p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+          <div className="flex flex-col gap-1 w-28 md:w-36">
             {photos.map((photo, index) => (
               <div
                 key={index}
-                className="overflow-hidden rounded-lg border-2 border-background"
+                className="overflow-hidden rounded-lg border-2 border-white/20"
                 style={{
                   filter: filters[selectedFilter].filter,
                 }}
@@ -118,50 +171,45 @@ export function PhotoCustomize({
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Filter Selection */}
-      <div className="w-full max-w-2xl">
-        <h3 className="mb-4 text-center text-lg font-semibold text-foreground">
-          Choose a Filter
-        </h3>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-          {(Object.entries(filters) as Array<[FilterType, FilterConfig]>).map(
-            ([filterKey, filterConfig]) => (
-              <button
-                key={filterKey}
-                onClick={() => setSelectedFilter(filterKey)}
-                className={`rounded-lg border-2 px-4 py-3 text-center font-medium transition-all ${
-                  selectedFilter === filterKey
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border bg-background text-foreground hover:border-foreground"
-                }`}
-              >
-                {filterConfig.label}
-              </button>
-            ),
-          )}
         </div>
-      </div>
 
-      {/* Action Buttons */}
-      <div className="flex w-full max-w-sm gap-4">
-        <Button
-          onClick={() => setSelectedFilter("none")}
-          variant="outline"
-          className="flex-1"
-          disabled={isProcessing}
-        >
-          Reset
-        </Button>
-        <Button
+        {/* Filter Selection */}
+        <div className="animate-fade-in-up-delay-3 w-full max-w-sm">
+          <div className="grid grid-cols-6 gap-2">
+            {(Object.entries(filters) as Array<[FilterType, FilterConfig]>).map(
+              ([filterKey, filterConfig]) => (
+                <button
+                  key={filterKey}
+                  onClick={() => setSelectedFilter(filterKey)}
+                  className={`group flex flex-col items-center gap-1 rounded-xl p-2 transition-all duration-300 ${
+                    selectedFilter === filterKey
+                      ? "bg-black dark:bg-white text-white dark:text-black scale-105"
+                      : "bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white"
+                  }`}
+                >
+                  <span className="text-lg transition-transform duration-300 group-hover:scale-110">
+                    {filterConfig.emoji}
+                  </span>
+                  <span className="text-[8px] font-medium tracking-wide">
+                    {filterConfig.label}
+                  </span>
+                </button>
+              ),
+            )}
+          </div>
+        </div>
+
+        {/* Continue Button */}
+        <button
           onClick={handleContinue}
-          className="flex-1"
           disabled={isProcessing}
+          className="group relative disabled:opacity-50"
         >
-          {isProcessing ? "Processing..." : "Continue to Print"}
-        </Button>
+          <span className="text-base font-medium tracking-widest text-black/80 dark:text-white/80 uppercase transition-all group-hover:text-black dark:group-hover:text-white group-hover:tracking-[0.3em]">
+            {isProcessing ? "Processing..." : "Continue"}
+          </span>
+          <span className="absolute -bottom-1.5 left-1/2 h-px w-0 -translate-x-1/2 bg-black dark:bg-white transition-all duration-500 group-hover:w-full group-disabled:w-0" />
+        </button>
       </div>
     </div>
   );
