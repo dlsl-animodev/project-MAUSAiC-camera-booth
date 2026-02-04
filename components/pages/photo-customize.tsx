@@ -8,6 +8,29 @@ interface PhotoCustomizeProps {
   onComplete: (filteredPhotos: string[]) => void;
 }
 
+// Floating bubble component
+const FloatingBubble = ({
+  size,
+  position,
+  delay,
+  animation,
+}: {
+  size: number;
+  position: { top?: string; bottom?: string; left?: string; right?: string };
+  delay: string;
+  animation: string;
+}) => (
+  <div
+    className={`absolute rounded-full bg-black/5 dark:bg-white/5 backdrop-blur-sm ${animation}`}
+    style={{
+      width: size,
+      height: size,
+      ...position,
+      animationDelay: delay,
+    }}
+  />
+);
+
 type FilterType =
   | "none"
   | "grayscale"
@@ -87,6 +110,34 @@ export function PhotoCustomize({
 
   return (
     <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white dark:bg-black px-6">
+      {/* Floating Bubbles Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <FloatingBubble
+          size={300}
+          position={{ top: "-5%", left: "-5%" }}
+          delay="0s"
+          animation="animate-float-bubble"
+        />
+        <FloatingBubble
+          size={200}
+          position={{ top: "30%", right: "-5%" }}
+          delay="1.5s"
+          animation="animate-float-bubble-reverse"
+        />
+        <FloatingBubble
+          size={150}
+          position={{ bottom: "5%", left: "5%" }}
+          delay="0.5s"
+          animation="animate-float-bubble-slow"
+        />
+        <FloatingBubble
+          size={180}
+          position={{ bottom: "20%", right: "10%" }}
+          delay="2s"
+          animation="animate-float-bubble"
+        />
+      </div>
+
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/[0.02] to-black/[0.05] dark:from-transparent dark:via-white/[0.02] dark:to-white/[0.05] pointer-events-none" />
 
