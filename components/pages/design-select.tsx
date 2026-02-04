@@ -82,27 +82,27 @@ export function DesignSelect({
   const design = designs[selectedDesign];
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center gap-8 bg-background px-4 py-8">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background px-4 overflow-hidden">
       {/* Title */}
-      <div className="flex flex-col items-center gap-2">
-        <h1 className="text-balance text-center text-4xl font-bold text-foreground md:text-5xl">
+      <div className="flex flex-col items-center gap-1">
+        <h1 className="text-balance text-center text-2xl font-bold text-foreground md:text-3xl">
           Choose Your Design
         </h1>
-        <p className="text-muted-foreground">
-          Pick a frame design for your photo strip
+        <p className="text-sm text-muted-foreground">
+          Pick a frame design for your strip
         </p>
       </div>
 
       {/* Photo Strip Preview */}
       <Card
-        className="w-full max-w-xs border-4 p-4 transition-all duration-300"
+        className="border-4 p-3 transition-all duration-300"
         style={{
           borderColor: design.borderColor,
           backgroundColor: design.backgroundColor,
         }}
       >
         <CardContent className="p-0">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5 w-24 md:w-32">
             {photos.map((photo, index) => (
               <div
                 key={index}
@@ -118,7 +118,7 @@ export function DesignSelect({
             ))}
             {/* Footer text */}
             <div
-              className="mt-2 text-center text-sm font-bold tracking-wider"
+              className="mt-1 text-center text-xs font-bold tracking-wider"
               style={{ color: design.textColor }}
             >
               📸 PHOTO BOOTH
@@ -128,17 +128,17 @@ export function DesignSelect({
       </Card>
 
       {/* Design Selection */}
-      <div className="w-full max-w-2xl">
-        <h3 className="mb-4 text-center text-lg font-semibold text-foreground">
+      <div className="w-full max-w-xl">
+        <h3 className="mb-2 text-center text-sm font-semibold text-foreground">
           Select a Frame Design
         </h3>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-3 gap-2 md:grid-cols-6">
           {(Object.entries(designs) as Array<[DesignType, DesignConfig]>).map(
             ([designKey, designConfig]) => (
               <button
                 key={designKey}
                 onClick={() => setSelectedDesign(designKey)}
-                className={`relative overflow-hidden rounded-lg border-2 px-4 py-3 text-center font-medium transition-all ${
+                className={`relative overflow-hidden rounded-lg border-2 px-3 py-2 text-center text-sm font-medium transition-all ${
                   selectedDesign === designKey
                     ? "ring-2 ring-foreground ring-offset-2"
                     : "hover:border-foreground"
@@ -166,7 +166,7 @@ export function DesignSelect({
           Reset
         </Button>
         <Button onClick={() => onComplete(selectedDesign)} className="flex-1">
-          Continue to Print
+          Continue
         </Button>
       </div>
     </div>

@@ -87,25 +87,25 @@ export function PhotoCustomize({
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center gap-8 bg-background px-4 py-8">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background px-4 overflow-hidden">
       {/* Title */}
-      <div className="flex flex-col items-center gap-2">
-        <h1 className="text-balance text-center text-4xl font-bold text-foreground md:text-5xl">
+      <div className="flex flex-col items-center gap-1">
+        <h1 className="text-balance text-center text-2xl font-bold text-foreground md:text-3xl">
           Customize Your Strip
         </h1>
-        <p className="text-muted-foreground">
-          Choose a filter and finalize your photos
+        <p className="text-sm text-muted-foreground">
+          Choose a filter for your photos
         </p>
       </div>
 
       {/* Photo Strip Preview */}
-      <Card className="border-2 border-foreground bg-foreground p-4">
+      <Card className="border-2 border-foreground bg-foreground p-3">
         <CardContent className="p-0">
-          <div className="flex flex-col gap-2 w-32 md:w-40 mx-auto">
+          <div className="flex flex-col gap-1.5 w-24 md:w-32 mx-auto">
             {photos.map((photo, index) => (
               <div
                 key={index}
-                className="overflow-hidden rounded-lg border-2 border-background"
+                className="overflow-hidden rounded-md border-2 border-background"
                 style={{
                   filter: filters[selectedFilter].filter,
                 }}
@@ -122,17 +122,17 @@ export function PhotoCustomize({
       </Card>
 
       {/* Filter Selection */}
-      <div className="w-full max-w-2xl">
-        <h3 className="mb-4 text-center text-lg font-semibold text-foreground">
+      <div className="w-full max-w-xl">
+        <h3 className="mb-2 text-center text-sm font-semibold text-foreground">
           Choose a Filter
         </h3>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-3 gap-2 md:grid-cols-6">
           {(Object.entries(filters) as Array<[FilterType, FilterConfig]>).map(
             ([filterKey, filterConfig]) => (
               <button
                 key={filterKey}
                 onClick={() => setSelectedFilter(filterKey)}
-                className={`rounded-lg border-2 px-4 py-3 text-center font-medium transition-all ${
+                className={`rounded-lg border-2 px-3 py-2 text-center text-sm font-medium transition-all ${
                   selectedFilter === filterKey
                     ? "border-foreground bg-foreground text-background"
                     : "border-border bg-background text-foreground hover:border-foreground"
@@ -160,7 +160,7 @@ export function PhotoCustomize({
           className="flex-1"
           disabled={isProcessing}
         >
-          {isProcessing ? "Processing..." : "Continue to Print"}
+          {isProcessing ? "Processing..." : "Continue"}
         </Button>
       </div>
     </div>

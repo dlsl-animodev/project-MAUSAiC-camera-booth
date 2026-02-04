@@ -239,86 +239,86 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center gap-8 bg-background px-4 py-8">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background px-4 overflow-hidden">
       {/* Title */}
-      <div className="flex flex-col items-center gap-2">
-        <h1 className="text-balance text-center text-4xl font-bold text-foreground md:text-5xl">
+      <div className="flex flex-col items-center gap-1">
+        <h1 className="text-balance text-center text-2xl font-bold text-foreground md:text-3xl">
           Your Photo Strip
         </h1>
-        <p className="text-muted-foreground">Ready to print your memories</p>
+        <p className="text-sm text-muted-foreground">Scan or print your memories</p>
       </div>
 
-      {/* Print Preview */}
-      <Card
-        className="w-full max-w-xs border-4 p-4"
-        style={{
-          borderColor: designConfig.borderColor,
-          backgroundColor: designConfig.backgroundColor,
-        }}
-      >
-        <CardContent className="p-0">
-          <div ref={printRef} className="flex flex-col gap-2">
-            {photos.map((photo, index) => (
-              <div
-                key={index}
-                className="overflow-hidden rounded-sm"
-                style={{ border: `2px solid ${designConfig.borderColor}` }}
-              >
-                <img
-                  src={photo || "/placeholder.svg"}
-                  alt={`Photo ${index + 1}`}
-                  className="aspect-[4/3] w-full object-cover"
-                />
-              </div>
-            ))}
-            {/* Footer text */}
-            <div
-              className="mt-2 text-center text-sm font-bold tracking-wider"
-              style={{ color: designConfig.textColor }}
-            >
-              📸 PHOTO BOOTH
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* QR Code Section */}
-      <div className="flex flex-col items-center gap-3">
-        <h3 className="text-lg font-semibold text-foreground">
-          Scan to Download
-        </h3>
-        {isGenerating ? (
-          <div className="flex h-32 w-32 items-center justify-center rounded-lg bg-muted">
-            <p className="text-sm text-muted-foreground">Uploading...</p>
-          </div>
-        ) : downloadUrl ? (
-          <div className="rounded-lg bg-white p-3">
-            <QRCodeSVG
-              value={downloadUrl}
-              size={128}
-              level="M"
-              includeMargin={false}
-            />
-          </div>
-        ) : null}
-        {uploadError && (
-          <p className="text-xs text-red-500 text-center">{uploadError}</p>
-        )}
-        <p className="text-xs text-muted-foreground text-center max-w-xs">
-          Scan with your phone camera to download the photo strip
-        </p>
-        <Button
-          onClick={handleDownload}
-          variant="secondary"
-          size="sm"
-          disabled={!downloadUrl}
+      <div className="flex gap-6 items-start">
+        {/* Print Preview */}
+        <Card
+          className="border-4 p-3"
+          style={{
+            borderColor: designConfig.borderColor,
+            backgroundColor: designConfig.backgroundColor,
+          }}
         >
-          📥 Download Directly
-        </Button>
+          <CardContent className="p-0">
+            <div ref={printRef} className="flex flex-col gap-1.5 w-24 md:w-32">
+              {photos.map((photo, index) => (
+                <div
+                  key={index}
+                  className="overflow-hidden rounded-sm"
+                  style={{ border: `2px solid ${designConfig.borderColor}` }}
+                >
+                  <img
+                    src={photo || "/placeholder.svg"}
+                    alt={`Photo ${index + 1}`}
+                    className="aspect-[4/3] w-full object-cover"
+                  />
+                </div>
+              ))}
+              {/* Footer text */}
+              <div
+                className="mt-1 text-center text-xs font-bold tracking-wider"
+                style={{ color: designConfig.textColor }}
+              >
+                📸 PHOTO BOOTH
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* QR Code Section */}
+        <div className="flex flex-col items-center gap-2">
+          <h3 className="text-sm font-semibold text-foreground">
+            Scan to Download
+          </h3>
+          {isGenerating ? (
+            <div className="flex h-28 w-28 items-center justify-center rounded-lg bg-muted">
+              <p className="text-xs text-muted-foreground">Uploading...</p>
+            </div>
+          ) : downloadUrl ? (
+            <div className="rounded-lg bg-white p-2">
+              <QRCodeSVG
+                value={downloadUrl}
+                size={112}
+                level="M"
+                includeMargin={false}
+              />
+            </div>
+          ) : null}
+          {uploadError && (
+            <p className="text-xs text-red-500 text-center max-w-[120px]">{uploadError}</p>
+          )}
+          <Button
+            onClick={handleDownload}
+            variant="secondary"
+            size="sm"
+            disabled={!downloadUrl}
+            className="text-xs"
+          >
+            📥 Download
+          </Button>
+        </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="flex w-full max-w-md flex-col gap-3 md:flex-row md:gap-4">
+      <div className="flex w-full max-w-md gap-3">
         <Button
           onClick={handlePrint}
           size="lg"

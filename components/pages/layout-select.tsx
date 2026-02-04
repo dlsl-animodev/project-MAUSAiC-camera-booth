@@ -9,7 +9,7 @@ interface LayoutSelectProps {
 
 export function LayoutSelect({ onSelectLayout }: LayoutSelectProps) {
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-12 px-4 py-8">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-8 px-4 overflow-hidden">
       <div className="flex flex-col items-center gap-4">
         <h1 className="text-balance text-center text-4xl font-bold text-foreground md:text-5xl">
           Choose Your Layout
