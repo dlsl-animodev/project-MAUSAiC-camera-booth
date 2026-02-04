@@ -347,26 +347,26 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
   };
 
   return (
-    <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white dark:bg-black px-6">
+    <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white dark:bg-black px-4">
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/[0.02] to-black/[0.05] dark:from-transparent dark:via-white/[0.02] dark:to-white/[0.05] pointer-events-none" />
 
-      <div className="relative z-10 flex flex-col items-center gap-6 w-full">
+      <div className="relative z-10 flex flex-col items-center gap-4 w-full">
         {/* Title */}
-        <div className="flex flex-col items-center gap-2">
-          <h1 className="animate-fade-in-up text-center text-4xl font-semibold tracking-tight text-black dark:text-white md:text-5xl">
+        <div className="flex flex-col items-center gap-1">
+          <h1 className="animate-fade-in-up text-center text-3xl font-semibold tracking-tight text-black dark:text-white md:text-4xl">
             Your Strip
           </h1>
-          <p className="animate-fade-in-up-delay-1 text-sm font-light tracking-wide text-black/50 dark:text-white/50">
-            Scan the QR code to download
+          <p className="animate-fade-in-up-delay-1 text-xs font-light tracking-wide text-black/50 dark:text-white/50">
+            Scan QR to download
           </p>
         </div>
 
-        <div className="animate-fade-in-up-delay-2 flex gap-8 items-center">
+        <div className="animate-fade-in-up-delay-2 flex gap-6 items-center">
           {/* Print Preview - CSS styled */}
           <div
             ref={printRef}
-            className={`relative w-36 md:w-44 rounded-xl p-3 shadow-[0_20px_60px_rgba(0,0,0,0.3)] transition-transform duration-500 hover:scale-[1.02] ${
+            className={`relative w-28 md:w-36 rounded-xl p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.3)] transition-transform duration-500 hover:scale-[1.02] ${
               design === "valentine"
                 ? "bg-gradient-to-b from-[#8b0000] via-[#dc143c] to-[#8b0000] border-[5px] border-white"
                 : design === "marquee"
@@ -454,7 +454,7 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
               </>
             )}
 
-            <div className="flex flex-col gap-1.5 relative z-10">
+            <div className="flex flex-col gap-1 relative z-10">
               {photos.map((photo, index) => (
                 <div
                   key={index}
@@ -481,7 +481,7 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
               ))}
             </div>
             <div
-              className={`mt-2 text-center text-[8px] font-bold tracking-wider relative z-10 ${
+              className={`mt-1.5 text-center text-[6px] font-bold tracking-wider relative z-10 ${
                 design === "valentine"
                   ? "text-white"
                   : design === "marquee"
@@ -500,23 +500,27 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
           </div>
 
           {/* QR Code Section */}
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-3">
             {isGenerating ? (
-              <div className="flex h-32 w-32 items-center justify-center rounded-2xl bg-black/5 dark:bg-white/5">
-                <div className="h-6 w-6 animate-spin rounded-full border-2 border-black/20 dark:border-white/20 border-t-black dark:border-t-white" />
+              <div className="flex h-28 w-28 items-center justify-center rounded-xl bg-black/5 dark:bg-white/5">
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-black/20 dark:border-white/20 border-t-black dark:border-t-white" />
               </div>
             ) : downloadUrl ? (
-              <div className="rounded-2xl bg-white p-3 shadow-lg">
-                <QRCodeSVG
-                  value={downloadUrl}
-                  size={120}
-                  level="M"
-                  includeMargin={false}
-                />
+              <div>
+                <div className="rounded-xl bg-white p-2.5 shadow-lg">
+                  <p className="text-xs">Scan to download</p>
+
+                  <QRCodeSVG
+                    value={downloadUrl}
+                    size={100}
+                    level="M"
+                    includeMargin={false}
+                  />
+                </div>
               </div>
             ) : null}
             {uploadError && (
-              <p className="text-xs font-light text-black/50 dark:text-white/50 text-center max-w-32">
+              <p className="text-[10px] font-light text-black/50 dark:text-white/50 text-center max-w-28">
                 {uploadError}
               </p>
             )}
@@ -524,20 +528,20 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
         </div>
 
         {/* Action Buttons */}
-        <div className="animate-fade-in-up-delay-3 flex gap-6 mt-4">
+        <div className="animate-fade-in-up-delay-3 flex gap-6">
           <button
             onClick={handlePrint}
             disabled={!downloadUrl}
-            className="group relative px-8 py-3 disabled:opacity-30 disabled:cursor-not-allowed"
+            className="group relative px-6 py-2 disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            <span className="text-base font-medium tracking-widest text-black/80 dark:text-white/80 uppercase transition-all group-hover:text-black dark:group-hover:text-white">
+            <span className="text-sm font-medium tracking-widest text-black/80 dark:text-white/80 uppercase transition-all group-hover:text-black dark:group-hover:text-white">
               Print
             </span>
             <span className="absolute -bottom-1 left-1/2 h-px w-0 -translate-x-1/2 bg-black dark:bg-white transition-all duration-300 group-hover:w-full group-disabled:w-0" />
           </button>
 
-          <button onClick={onReset} className="group relative px-8 py-3">
-            <span className="text-base font-medium tracking-widest text-black/50 dark:text-white/50 uppercase transition-all group-hover:text-black dark:group-hover:text-white">
+          <button onClick={onReset} className="group relative px-6 py-2">
+            <span className="text-sm font-medium tracking-widest text-black/50 dark:text-white/50 uppercase transition-all group-hover:text-black dark:group-hover:text-white">
               Start Over
             </span>
             <span className="absolute -bottom-1 left-1/2 h-px w-0 -translate-x-1/2 bg-black dark:bg-white transition-all duration-300 group-hover:w-full" />

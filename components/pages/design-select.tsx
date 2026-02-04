@@ -234,20 +234,20 @@ export function DesignSelect({
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/[0.02] to-black/[0.05] dark:from-transparent dark:via-white/[0.02] dark:to-white/[0.05] pointer-events-none" />
 
-      <div className="relative z-10 flex flex-col items-center gap-6 w-full">
+      <div className="relative z-10 flex flex-col items-center gap-5 w-full">
         {/* Title */}
-        <div className="flex flex-col items-center gap-2">
-          <h1 className="animate-fade-in-up text-center text-4xl font-semibold tracking-tight text-black dark:text-white md:text-5xl">
+        <div className="flex flex-col items-center gap-1">
+          <h1 className="animate-fade-in-up text-center text-3xl font-semibold tracking-tight text-black dark:text-white md:text-4xl">
             Choose Frame
           </h1>
-          <p className="animate-fade-in-up-delay-1 text-sm font-light tracking-wide text-black/50 dark:text-white/50">
-            Select a theme for your photo strip
+          <p className="animate-fade-in-up-delay-1 text-xs font-light tracking-wide text-black/50 dark:text-white/50">
+            Select a theme for your strip
           </p>
         </div>
 
         {/* Frame Preview with Photos */}
         <div
-          className={`animate-fade-in-up-delay-2 relative w-36 md:w-44 rounded-xl p-3 shadow-[0_20px_60px_rgba(0,0,0,0.3)] transition-transform duration-500 hover:scale-[1.02] ${design.stripClass}`}
+          className={`animate-fade-in-up-delay-2 relative w-28 md:w-36 rounded-xl p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.3)] transition-transform duration-500 hover:scale-[1.02] ${design.stripClass}`}
         >
           {/* Decorations */}
           {design.decoration === "hearts" && <FloatingHearts />}
@@ -255,7 +255,7 @@ export function DesignSelect({
           {design.decoration === "candy" && <CandyStripes />}
 
           {/* Photos */}
-          <div className="flex flex-col gap-1.5 relative z-10">
+          <div className="flex flex-col gap-1 relative z-10">
             {photos.slice(0, 4).map((photo, index) => (
               <div
                 key={index}
@@ -272,30 +272,30 @@ export function DesignSelect({
 
           {/* Footer */}
           <div
-            className={`mt-2 text-center text-[8px] font-bold tracking-wider relative z-10 ${design.footerClass}`}
+            className={`mt-1.5 text-center text-[6px] font-bold tracking-wider relative z-10 ${design.footerClass}`}
           >
             {design.footerText}
           </div>
         </div>
 
         {/* Frame Selection */}
-        <div className="animate-fade-in-up-delay-3 w-full max-w-md">
-          <div className="grid grid-cols-3 gap-3 md:grid-cols-6">
+        <div className="animate-fade-in-up-delay-3 w-full max-w-sm">
+          <div className="grid grid-cols-6 gap-2">
             {(Object.entries(designs) as Array<[DesignType, DesignConfig]>).map(
               ([designKey, designConfig]) => (
                 <button
                   key={designKey}
                   onClick={() => setSelectedDesign(designKey)}
-                  className={`group flex flex-col items-center gap-1.5 rounded-2xl p-3 transition-all duration-300 ${
+                  className={`group flex flex-col items-center gap-1 rounded-xl p-2 transition-all duration-300 ${
                     selectedDesign === designKey
                       ? "bg-black dark:bg-white text-white dark:text-black scale-105"
                       : "bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white"
                   }`}
                 >
-                  <span className="text-xl transition-transform duration-300 group-hover:scale-110">
+                  <span className="text-lg transition-transform duration-300 group-hover:scale-110">
                     {designConfig.emoji}
                   </span>
-                  <span className="text-[10px] font-medium tracking-wide">
+                  <span className="text-[8px] font-medium tracking-wide">
                     {designConfig.name}
                   </span>
                 </button>
@@ -307,12 +307,12 @@ export function DesignSelect({
         {/* Continue Button */}
         <button
           onClick={() => onComplete(selectedDesign)}
-          className="group relative mt-2"
+          className="group relative"
         >
-          <span className="text-lg font-medium tracking-widest text-black/80 dark:text-white/80 uppercase transition-all group-hover:text-black dark:group-hover:text-white group-hover:tracking-[0.3em]">
+          <span className="text-base font-medium tracking-widest text-black/80 dark:text-white/80 uppercase transition-all group-hover:text-black dark:group-hover:text-white group-hover:tracking-[0.3em]">
             Continue
           </span>
-          <span className="absolute -bottom-2 left-1/2 h-px w-0 -translate-x-1/2 bg-black dark:bg-white transition-all duration-500 group-hover:w-full" />
+          <span className="absolute -bottom-1.5 left-1/2 h-px w-0 -translate-x-1/2 bg-black dark:bg-white transition-all duration-500 group-hover:w-full" />
         </button>
       </div>
     </div>
