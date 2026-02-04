@@ -55,7 +55,7 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
     }
   }, [permission]);
 
-  const maxPhotos = layout === "single" ? 4 : 2;
+  const maxPhotos = layout === "single" ? 4 : 3;
 
   // Auto capture every 3 seconds when capturing
   useEffect(() => {

@@ -44,10 +44,11 @@ export function LayoutSelect({ onSelectLayout }: LayoutSelectProps) {
           </CardContent>
         </Card>
 
-        {/* Short Strip - 2 photos */}
+        {/* Short Strip - 3 photos */}
         <Card className="cursor-pointer border-2 transition-all hover:border-foreground">
           <CardContent className="flex flex-col items-center gap-6 p-8">
             <div className="flex flex-col gap-2">
+              <div className="h-10 w-8 rounded border-2 border-foreground" />
               <div className="h-10 w-8 rounded border-2 border-foreground" />
               <div className="h-10 w-8 rounded border-2 border-foreground" />
             </div>
@@ -55,7 +56,7 @@ export function LayoutSelect({ onSelectLayout }: LayoutSelectProps) {
               <h3 className="text-center text-xl font-semibold text-foreground">
                 Short Strip
               </h3>
-              <p className="text-sm text-muted-foreground">2 photos</p>
+              <p className="text-sm text-muted-foreground">3 photos</p>
               <Button
                 onClick={() => onSelectLayout("double")}
                 className="mt-2 w-full"
