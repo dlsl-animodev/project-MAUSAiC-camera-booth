@@ -70,8 +70,8 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
     }
 
     // Show countdown
-    setCountdown(10);
-    let count = 10;
+    setCountdown(5);
+    let count = 5;
     const countdownInterval = setInterval(() => {
       count -= 1;
       if (count <= 0) {
