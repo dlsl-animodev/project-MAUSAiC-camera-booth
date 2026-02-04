@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { type DesignType, designs } from "./design-select";
 import { QRCodeSVG } from "qrcode.react";
 import { uploadPhotoStrip } from "@/lib/supabase";
@@ -348,209 +347,202 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
   };
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background px-4 overflow-hidden">
-      {/* Title */}
-      <div className="flex flex-col items-center gap-1">
-        <h1 className="text-balance text-center text-2xl font-bold text-foreground md:text-3xl">
-          Your Photo Strip
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Scan or print your memories
-        </p>
-      </div>
+    <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white dark:bg-black px-6">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/[0.02] to-black/[0.05] dark:from-transparent dark:via-white/[0.02] dark:to-white/[0.05] pointer-events-none" />
 
-      <div className="flex gap-6 items-start">
-        {/* Print Preview - CSS styled */}
-        <div
-          ref={printRef}
-          className={`relative w-40 md:w-48 rounded-xl p-3 shadow-[0_20px_60px_rgba(0,0,0,0.4)] ${
-            design === "valentine"
-              ? "bg-gradient-to-b from-[#8b0000] via-[#dc143c] to-[#8b0000] border-[5px] border-white"
-              : design === "marquee"
-                ? "bg-gradient-to-b from-[#2c1810] via-[#5c3a1f] to-[#2c1810] border-[5px] border-[#8b4513] shadow-[inset_0_0_20px_rgba(255,215,0,0.6),0_0_30px_rgba(255,215,0,0.3)]"
-                : design === "candy"
-                  ? "bg-gradient-to-b from-[#fff0f5] via-[#ffe4e9] to-[#fff0f5] border-[5px] border-[#ff69b4]"
-                  : design === "neon"
-                    ? "bg-gradient-to-b from-[#0a0e27] via-[#1a1f3a] to-[#0a0e27] border-[5px] border-[#00ffff] shadow-[inset_0_0_20px_#00ffff,0_0_30px_rgba(0,255,255,0.4)]"
-                    : design === "vintage"
-                      ? "bg-gradient-to-b from-[#f5e6d3] via-[#e8d7c3] to-[#f5e6d3] border-[5px] border-[#8b7355]"
-                      : "bg-gradient-to-b from-white to-[#f8f9fa] border-[5px] border-[#2c3e50]"
-          }`}
-        >
-          {/* Valentine hearts */}
-          {design === "valentine" && (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden z-[1]">
-              {["❤", "💕", "♥", "💕", "❤", "♥"].map((heart, i) => (
+      <div className="relative z-10 flex flex-col items-center gap-6 w-full">
+        {/* Title */}
+        <div className="flex flex-col items-center gap-2">
+          <h1 className="animate-fade-in-up text-center text-4xl font-semibold tracking-tight text-black dark:text-white md:text-5xl">
+            Your Strip
+          </h1>
+          <p className="animate-fade-in-up-delay-1 text-sm font-light tracking-wide text-black/50 dark:text-white/50">
+            Scan the QR code to download
+          </p>
+        </div>
+
+        <div className="animate-fade-in-up-delay-2 flex gap-8 items-center">
+          {/* Print Preview - CSS styled */}
+          <div
+            ref={printRef}
+            className={`relative w-36 md:w-44 rounded-xl p-3 shadow-[0_20px_60px_rgba(0,0,0,0.3)] transition-transform duration-500 hover:scale-[1.02] ${
+              design === "valentine"
+                ? "bg-gradient-to-b from-[#8b0000] via-[#dc143c] to-[#8b0000] border-[5px] border-white"
+                : design === "marquee"
+                  ? "bg-gradient-to-b from-[#2c1810] via-[#5c3a1f] to-[#2c1810] border-[5px] border-[#8b4513] shadow-[inset_0_0_20px_rgba(255,215,0,0.6),0_0_30px_rgba(255,215,0,0.3)]"
+                  : design === "candy"
+                    ? "bg-gradient-to-b from-[#fff0f5] via-[#ffe4e9] to-[#fff0f5] border-[5px] border-[#ff69b4]"
+                    : design === "neon"
+                      ? "bg-gradient-to-b from-[#0a0e27] via-[#1a1f3a] to-[#0a0e27] border-[5px] border-[#00ffff] shadow-[inset_0_0_20px_#00ffff,0_0_30px_rgba(0,255,255,0.4)]"
+                      : design === "vintage"
+                        ? "bg-gradient-to-b from-[#f5e6d3] via-[#e8d7c3] to-[#f5e6d3] border-[5px] border-[#8b7355]"
+                        : "bg-gradient-to-b from-white to-[#f8f9fa] border-[5px] border-[#2c3e50]"
+            }`}
+          >
+            {/* Valentine hearts */}
+            {design === "valentine" && (
+              <div className="absolute inset-0 pointer-events-none overflow-hidden z-[1]">
+                {["❤", "💕", "♥", "💕", "❤", "♥"].map((heart, i) => (
+                  <div
+                    key={i}
+                    className="absolute text-xl opacity-60 animate-pulse"
+                    style={{
+                      top: `${[5, 5, 30, 50, 70, 90][i]}%`,
+                      left: i % 2 === 0 ? "5%" : undefined,
+                      right: i % 2 === 1 ? "5%" : undefined,
+                      animationDelay: `${i * 0.5}s`,
+                    }}
+                  >
+                    {heart}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Marquee lights */}
+            {design === "marquee" && (
+              <div className="absolute inset-0 pointer-events-none z-[5]">
+                {[12, 25, 38, 51, 64, 77, 90].map((left, i) => (
+                  <div
+                    key={`top-${i}`}
+                    className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
+                    style={{ left: `${left}%`, top: "8px" }}
+                  />
+                ))}
+                {[12, 25, 38, 51, 64, 77, 90].map((left, i) => (
+                  <div
+                    key={`bottom-${i}`}
+                    className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
+                    style={{ left: `${left}%`, bottom: "8px" }}
+                  />
+                ))}
+                {[10, 25, 40, 55, 70, 85].map((top, i) => (
+                  <div
+                    key={`left-${i}`}
+                    className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
+                    style={{ left: "8px", top: `${top}%` }}
+                  />
+                ))}
+                {[10, 25, 40, 55, 70, 85].map((top, i) => (
+                  <div
+                    key={`right-${i}`}
+                    className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
+                    style={{ right: "8px", top: `${top}%` }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Candy stripes */}
+            {design === "candy" && (
+              <>
                 <div
-                  key={i}
-                  className="absolute text-xl opacity-60 animate-pulse"
+                  className="absolute top-0 left-0 right-0 h-7 z-[5]"
                   style={{
-                    top: `${[5, 5, 30, 50, 70, 90][i]}%`,
-                    left: i % 2 === 0 ? "5%" : undefined,
-                    right: i % 2 === 1 ? "5%" : undefined,
-                    animationDelay: `${i * 0.5}s`,
+                    background:
+                      "repeating-linear-gradient(90deg, #ff69b4 0px, #ff69b4 8px, #ffb6c1 8px, #ffb6c1 16px)",
                   }}
+                />
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-7 z-[5]"
+                  style={{
+                    background:
+                      "repeating-linear-gradient(90deg, #ff69b4 0px, #ff69b4 8px, #ffb6c1 8px, #ffb6c1 16px)",
+                  }}
+                />
+              </>
+            )}
+
+            <div className="flex flex-col gap-1.5 relative z-10">
+              {photos.map((photo, index) => (
+                <div
+                  key={index}
+                  className={`overflow-hidden rounded ${
+                    design === "valentine"
+                      ? "border-[3px] border-[#ffb6c1] shadow-[0_0_20px_rgba(255,182,193,0.4)]"
+                      : design === "marquee"
+                        ? "border-[3px] border-[#d4af37] shadow-[0_4px_15px_rgba(0,0,0,0.5),0_0_20px_rgba(255,215,0,0.5)]"
+                        : design === "candy"
+                          ? "border-[3px] border-[#ffb6c1] shadow-sm"
+                          : design === "neon"
+                            ? "border-[3px] border-[#ff00ff] shadow-[0_0_8px_#ff00ff,inset_0_0_8px_rgba(255,0,255,0.2)]"
+                            : design === "vintage"
+                              ? "border-[3px] border-[#a0826d] rounded-sm shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
+                              : "border-[3px] border-[#34495e] shadow-[0_2px_6px_rgba(0,0,0,0.15)]"
+                  }`}
                 >
-                  {heart}
+                  <img
+                    src={photo}
+                    alt={`Photo ${index + 1}`}
+                    className="aspect-[4/3] w-full object-cover"
+                  />
                 </div>
               ))}
             </div>
-          )}
-
-          {/* Marquee lights */}
-          {design === "marquee" && (
-            <div className="absolute inset-0 pointer-events-none z-[5]">
-              {[12, 25, 38, 51, 64, 77, 90].map((left, i) => (
-                <div
-                  key={`top-${i}`}
-                  className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
-                  style={{ left: `${left}%`, top: "8px" }}
-                />
-              ))}
-              {[12, 25, 38, 51, 64, 77, 90].map((left, i) => (
-                <div
-                  key={`bottom-${i}`}
-                  className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
-                  style={{ left: `${left}%`, bottom: "8px" }}
-                />
-              ))}
-              {[10, 25, 40, 55, 70, 85].map((top, i) => (
-                <div
-                  key={`left-${i}`}
-                  className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
-                  style={{ left: "8px", top: `${top}%` }}
-                />
-              ))}
-              {[10, 25, 40, 55, 70, 85].map((top, i) => (
-                <div
-                  key={`right-${i}`}
-                  className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
-                  style={{ right: "8px", top: `${top}%` }}
-                />
-              ))}
+            <div
+              className={`mt-2 text-center text-[8px] font-bold tracking-wider relative z-10 ${
+                design === "valentine"
+                  ? "text-white"
+                  : design === "marquee"
+                    ? "text-[#ffd700]"
+                    : design === "candy"
+                      ? "text-[#c71585]"
+                      : design === "neon"
+                        ? "text-[#00ff00] drop-shadow-[0_0_10px_#00ff00]"
+                        : design === "vintage"
+                          ? "text-[#5c4033] font-mono"
+                          : "text-[#2c3e50]"
+              }`}
+            >
+              {designConfig.footerText}
             </div>
-          )}
+          </div>
 
-          {/* Candy stripes */}
-          {design === "candy" && (
-            <>
-              <div
-                className="absolute top-0 left-0 right-0 h-7 z-[5]"
-                style={{
-                  background:
-                    "repeating-linear-gradient(90deg, #ff69b4 0px, #ff69b4 8px, #ffb6c1 8px, #ffb6c1 16px)",
-                }}
-              />
-              <div
-                className="absolute bottom-0 left-0 right-0 h-7 z-[5]"
-                style={{
-                  background:
-                    "repeating-linear-gradient(90deg, #ff69b4 0px, #ff69b4 8px, #ffb6c1 8px, #ffb6c1 16px)",
-                }}
-              />
-            </>
-          )}
-
-          <div className="flex flex-col gap-2 relative z-10">
-            {photos.map((photo, index) => (
-              <div
-                key={index}
-                className={`overflow-hidden rounded ${
-                  design === "valentine"
-                    ? "border-[3px] border-[#ffb6c1] shadow-[0_0_20px_rgba(255,182,193,0.4)]"
-                    : design === "marquee"
-                      ? "border-[3px] border-[#d4af37] shadow-[0_4px_15px_rgba(0,0,0,0.5),0_0_20px_rgba(255,215,0,0.5)]"
-                      : design === "candy"
-                        ? "border-[3px] border-[#ffb6c1] shadow-sm"
-                        : design === "neon"
-                          ? "border-[3px] border-[#ff00ff] shadow-[0_0_8px_#ff00ff,inset_0_0_8px_rgba(255,0,255,0.2)]"
-                          : design === "vintage"
-                            ? "border-[3px] border-[#a0826d] rounded-sm shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
-                            : "border-[3px] border-[#34495e] shadow-[0_2px_6px_rgba(0,0,0,0.15)]"
-                }`}
-              >
-                <img
-                  src={photo}
-                  alt={`Photo ${index + 1}`}
-                  className="aspect-[4/3] w-full object-cover"
+          {/* QR Code Section */}
+          <div className="flex flex-col items-center gap-4">
+            {isGenerating ? (
+              <div className="flex h-32 w-32 items-center justify-center rounded-2xl bg-black/5 dark:bg-white/5">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-black/20 dark:border-white/20 border-t-black dark:border-t-white" />
+              </div>
+            ) : downloadUrl ? (
+              <div className="rounded-2xl bg-white p-3 shadow-lg">
+                <QRCodeSVG
+                  value={downloadUrl}
+                  size={120}
+                  level="M"
+                  includeMargin={false}
                 />
               </div>
-            ))}
-          </div>
-          <div
-            className={`mt-2 text-center text-[8px] md:text-[10px] font-bold tracking-wider relative z-10 ${
-              design === "valentine"
-                ? "text-white"
-                : design === "marquee"
-                  ? "text-[#ffd700]"
-                  : design === "candy"
-                    ? "text-[#c71585]"
-                    : design === "neon"
-                      ? "text-[#00ff00] drop-shadow-[0_0_10px_#00ff00]"
-                      : design === "vintage"
-                        ? "text-[#5c4033] font-mono"
-                        : "text-[#2c3e50]"
-            }`}
-          >
-            {designConfig.footerText}
+            ) : null}
+            {uploadError && (
+              <p className="text-xs font-light text-black/50 dark:text-white/50 text-center max-w-32">
+                {uploadError}
+              </p>
+            )}
           </div>
         </div>
 
-        {/* QR Code Section */}
-        <div className="flex flex-col items-center gap-2">
-          <h3 className="text-sm font-semibold text-foreground">
-            Scan to Download
-          </h3>
-          {isGenerating ? (
-            <div className="flex h-28 w-28 items-center justify-center rounded-lg bg-muted">
-              <p className="text-xs text-muted-foreground">Generating...</p>
-            </div>
-          ) : downloadUrl ? (
-            <div className="rounded-lg bg-white p-2">
-              <QRCodeSVG
-                value={downloadUrl}
-                size={112}
-                level="M"
-                includeMargin={false}
-              />
-            </div>
-          ) : null}
-          {uploadError && (
-            <p className="text-xs text-red-500 text-center max-w-30">
-              {uploadError}
-            </p>
-          )}
-          <Button
-            onClick={handleDownload}
-            variant="secondary"
-            size="sm"
+        {/* Action Buttons */}
+        <div className="animate-fade-in-up-delay-3 flex gap-6 mt-4">
+          <button
+            onClick={handlePrint}
             disabled={!downloadUrl}
-            className="text-xs"
+            className="group relative px-8 py-3 disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            📥 Download
-          </Button>
+            <span className="text-base font-medium tracking-widest text-black/80 dark:text-white/80 uppercase transition-all group-hover:text-black dark:group-hover:text-white">
+              Print
+            </span>
+            <span className="absolute -bottom-1 left-1/2 h-px w-0 -translate-x-1/2 bg-black dark:bg-white transition-all duration-300 group-hover:w-full group-disabled:w-0" />
+          </button>
+
+          <button onClick={onReset} className="group relative px-8 py-3">
+            <span className="text-base font-medium tracking-widest text-black/50 dark:text-white/50 uppercase transition-all group-hover:text-black dark:group-hover:text-white">
+              Start Over
+            </span>
+            <span className="absolute -bottom-1 left-1/2 h-px w-0 -translate-x-1/2 bg-black dark:bg-white transition-all duration-300 group-hover:w-full" />
+          </button>
         </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex w-full max-w-md gap-3">
-        <Button
-          onClick={handlePrint}
-          size="lg"
-          className="h-12 flex-1 text-base font-semibold"
-          disabled={!downloadUrl}
-        >
-          🖨️ Print
-        </Button>
-
-        <Button
-          onClick={onReset}
-          variant="outline"
-          size="lg"
-          className="h-12 flex-1 text-base font-semibold bg-transparent"
-        >
-          🔄 Start Over
-        </Button>
       </div>
     </div>
   );

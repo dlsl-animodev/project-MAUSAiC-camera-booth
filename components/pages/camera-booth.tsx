@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
 
 interface CameraBoothProps {
   layout: "single" | "double";
@@ -152,13 +150,14 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
 
   if (permission === null) {
     return (
-      <div className="flex h-screen w-full items-center justify-center overflow-hidden">
+      <div className="flex h-screen w-full items-center justify-center overflow-hidden bg-white dark:bg-black">
         <div className="flex flex-col items-center gap-4 text-center">
-          <h2 className="text-2xl font-bold text-foreground">
-            Loading Camera...
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-black/20 dark:border-white/20 border-t-black dark:border-t-white" />
+          <h2 className="text-xl font-medium tracking-tight text-black dark:text-white">
+            Initializing Camera
           </h2>
-          <p className="text-muted-foreground">
-            Please wait while we access your camera
+          <p className="text-sm font-light text-black/50 dark:text-white/50">
+            Please wait...
           </p>
         </div>
       </div>
@@ -167,13 +166,28 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
 
   if (permission === false) {
     return (
-      <div className="flex h-screen w-full items-center justify-center overflow-hidden">
-        <div className="flex flex-col items-center gap-4 text-center">
-          <h2 className="text-2xl font-bold text-foreground">
-            Camera Permission Required
+      <div className="flex h-screen w-full items-center justify-center overflow-hidden bg-white dark:bg-black">
+        <div className="flex flex-col items-center gap-4 text-center px-6">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-black/20 dark:border-white/20">
+            <svg
+              className="h-8 w-8 text-black/40 dark:text-white/40"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+              />
+            </svg>
+          </div>
+          <h2 className="text-xl font-medium tracking-tight text-black dark:text-white">
+            Camera Access Required
           </h2>
-          <p className="text-muted-foreground">
-            Please allow camera access to use the photo booth
+          <p className="text-sm font-light text-black/50 dark:text-white/50 max-w-xs">
+            Please allow camera access in your browser settings to continue
           </p>
         </div>
       </div>
@@ -183,20 +197,22 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
   // Photo Selection Phase
   if (phase === "selecting") {
     return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-foreground p-4 overflow-hidden">
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-black p-4 overflow-hidden">
         {/* Title */}
-        <div className="mb-4 text-center">
-          <h1 className="text-2xl font-bold text-background md:text-3xl">
+        <div className="mb-6 text-center">
+          <h1 className="text-2xl font-medium tracking-tight text-white md:text-3xl">
             Select Your Photos
           </h1>
-          <p className="text-background/70">
-            Choose {requiredPhotos} photos for your strip (
-            {selectedPhotos.length}/{requiredPhotos} selected)
+          <p className="mt-2 text-sm font-light text-white/60">
+            Choose {requiredPhotos} photos for your strip
+            <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-xs">
+              {selectedPhotos.length} / {requiredPhotos}
+            </span>
           </p>
         </div>
 
         {/* Photo Grid */}
-        <div className="grid grid-cols-3 gap-2 md:gap-3 max-w-2xl w-full">
+        <div className="grid grid-cols-3 gap-3 md:gap-4 max-w-2xl w-full">
           {capturedPhotos.map((photo, index) => {
             const isSelected = selectedPhotos.includes(index);
             const selectionOrder = selectedPhotos.indexOf(index) + 1;
@@ -208,12 +224,12 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
                 key={index}
                 onClick={() => handlePhotoSelect(index)}
                 disabled={!canSelect}
-                className={`relative aspect-[4/3] overflow-hidden rounded-lg border-4 transition-all ${
+                className={`group relative aspect-[4/3] overflow-hidden rounded-2xl transition-all duration-300 ${
                   isSelected
-                    ? "border-green-500 ring-2 ring-green-500"
+                    ? "ring-2 ring-white ring-offset-2 ring-offset-black scale-[0.98]"
                     : canSelect
-                      ? "border-background/50 hover:border-background"
-                      : "border-background/20 opacity-50 cursor-not-allowed"
+                      ? "hover:scale-[1.02] hover:ring-1 hover:ring-white/30"
+                      : "opacity-30 cursor-not-allowed"
                 }`}
               >
                 <img
@@ -222,10 +238,15 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
                   className="h-full w-full object-cover"
                 />
                 {isSelected && (
-                  <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
-                    <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl font-bold">
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[1px]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black text-lg font-semibold">
                       {selectionOrder}
                     </div>
+                  </div>
+                )}
+                {!isSelected && canSelect && (
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-full border-2 border-white/0 group-hover:border-white/60 transition-colors" />
                   </div>
                 )}
               </button>
@@ -234,15 +255,17 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
         </div>
 
         {/* Controls */}
-        <div className="mt-4 flex gap-4">
-          <Button
+        <div className="mt-6">
+          <button
             onClick={handleContinue}
-            size="lg"
             disabled={selectedPhotos.length !== requiredPhotos}
-            className="h-12 w-32 bg-background text-foreground hover:bg-muted disabled:opacity-50"
+            className="group relative px-12 py-4 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
           >
-            Continue
-          </Button>
+            <span className="text-lg font-medium tracking-wide text-white uppercase">
+              Continue
+            </span>
+            <span className="absolute bottom-2 left-1/2 h-px w-0 -translate-x-1/2 bg-white transition-all duration-300 group-hover:w-full group-disabled:w-0" />
+          </button>
         </div>
 
         {/* Hidden Canvas */}
@@ -253,48 +276,54 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
 
   // Capturing / Ready Phase
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-foreground p-4 overflow-hidden">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-6 bg-black p-4 overflow-hidden">
       {/* Flash Effect Overlay */}
       {showFlash && (
         <div className="fixed inset-0 z-50 bg-white pointer-events-none animate-flash" />
       )}
 
       {/* Video Stream */}
-      <div className="relative flex flex-col items-center gap-3">
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          muted
-          className="h-80 w-80 md:h-96 md:w-96 rounded-lg border-4 border-background object-cover -scale-x-100"
-        />
+      <div className="relative flex flex-col items-center gap-4">
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            className="h-80 w-80 md:h-[400px] md:w-[400px] object-cover -scale-x-100"
+          />
 
-        {/* Countdown Display */}
-        {countdown !== null && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-lg">
-            <div className="flex h-80 w-80 md:h-96 md:w-96 items-center justify-center">
-              <div className="text-9xl font-bold text-background drop-shadow-lg">
+          {/* Countdown Display */}
+          {countdown !== null && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+              <div className="text-[120px] font-extralight text-white tabular-nums">
                 {countdown}
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Photo Counter */}
-        <div className="text-xl font-bold text-background">
-          {phase === "capturing"
-            ? `Capturing: ${photoCount} / ${totalPhotosToCapture}`
-            : "Ready to capture 9 photos"}
+        <div className="text-center">
+          <p className="text-sm font-light tracking-widest text-white/60 uppercase">
+            {phase === "capturing" ? "Capturing" : "Ready"}
+          </p>
+          <p className="mt-1 text-2xl font-light tabular-nums text-white">
+            {phase === "capturing"
+              ? `${photoCount} / ${totalPhotosToCapture}`
+              : `${totalPhotosToCapture} Photos`}
+          </p>
         </div>
       </div>
 
       {/* Photo Thumbnails During Capture */}
       {phase === "capturing" && capturedPhotos.length > 0 && (
-        <div className="flex gap-1 flex-wrap justify-center max-w-md">
+        <div className="flex gap-2 flex-wrap justify-center max-w-md">
           {capturedPhotos.map((photo, index) => (
             <div
               key={index}
-              className="h-12 w-12 overflow-hidden rounded border-2 border-background"
+              className="h-14 w-14 overflow-hidden rounded-xl border border-white/20 animate-scale-in"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               <img
                 src={photo}
@@ -307,17 +336,14 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
       )}
 
       {/* Controls */}
-      <div className="flex flex-col items-center gap-4">
-        {phase === "ready" && (
-          <Button
-            onClick={handleStart}
-            size="lg"
-            className="h-14 w-48 bg-background text-foreground hover:bg-muted"
-          >
+      {phase === "ready" && (
+        <button onClick={handleStart} className="group relative mt-4">
+          <span className="animate-blink text-lg font-medium tracking-widest text-white/80 uppercase transition-all group-hover:text-white group-hover:tracking-[0.3em]">
             Start Capture
-          </Button>
-        )}
-      </div>
+          </span>
+          <span className="absolute -bottom-2 left-1/2 h-px w-0 -translate-x-1/2 bg-white transition-all duration-500 group-hover:w-full" />
+        </button>
+      )}
 
       {/* Hidden Canvas */}
       <canvas ref={canvasRef} className="hidden" />

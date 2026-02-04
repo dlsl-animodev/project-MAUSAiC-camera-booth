@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 
 interface DesignSelectProps {
   photos: string[];
@@ -231,84 +230,90 @@ export function DesignSelect({
   const design = designs[selectedDesign];
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background px-4 overflow-hidden">
-      {/* Title */}
-      <div className="flex flex-col items-center gap-1">
-        <h1 className="text-balance text-center text-2xl font-bold text-foreground md:text-3xl">
-          Choose Your Frame
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Pick a theme for your strip
-        </p>
-      </div>
+    <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white dark:bg-black px-6">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/[0.02] to-black/[0.05] dark:from-transparent dark:via-white/[0.02] dark:to-white/[0.05] pointer-events-none" />
 
-      {/* Frame Preview with Photos */}
-      <div
-        className={`relative w-40 md:w-48 rounded-xl p-3 shadow-[0_20px_60px_rgba(0,0,0,0.4)] transition-transform hover:scale-[1.02] ${design.stripClass}`}
-      >
-        {/* Decorations */}
-        {design.decoration === "hearts" && <FloatingHearts />}
-        {design.decoration === "marquee" && <MarqueeLights />}
-        {design.decoration === "candy" && <CandyStripes />}
-
-        {/* Photos */}
-        <div className="flex flex-col gap-2 relative z-10">
-          {photos.slice(0, 4).map((photo, index) => (
-            <div key={index} className={`overflow-hidden ${design.frameClass}`}>
-              <img
-                src={photo}
-                alt={`Photo ${index + 1}`}
-                className="aspect-[4/3] w-full object-cover"
-              />
-            </div>
-          ))}
+      <div className="relative z-10 flex flex-col items-center gap-6 w-full">
+        {/* Title */}
+        <div className="flex flex-col items-center gap-2">
+          <h1 className="animate-fade-in-up text-center text-4xl font-semibold tracking-tight text-black dark:text-white md:text-5xl">
+            Choose Frame
+          </h1>
+          <p className="animate-fade-in-up-delay-1 text-sm font-light tracking-wide text-black/50 dark:text-white/50">
+            Select a theme for your photo strip
+          </p>
         </div>
 
-        {/* Footer */}
+        {/* Frame Preview with Photos */}
         <div
-          className={`mt-2 text-center text-[10px] font-bold tracking-wider relative z-10 ${design.footerClass}`}
+          className={`animate-fade-in-up-delay-2 relative w-36 md:w-44 rounded-xl p-3 shadow-[0_20px_60px_rgba(0,0,0,0.3)] transition-transform duration-500 hover:scale-[1.02] ${design.stripClass}`}
         >
-          {design.footerText}
-        </div>
-      </div>
+          {/* Decorations */}
+          {design.decoration === "hearts" && <FloatingHearts />}
+          {design.decoration === "marquee" && <MarqueeLights />}
+          {design.decoration === "candy" && <CandyStripes />}
 
-      {/* Frame Selection */}
-      <div className="w-full max-w-lg">
-        <h3 className="mb-2 text-center text-sm font-semibold text-foreground">
-          Select a Theme
-        </h3>
-        <div className="grid grid-cols-3 gap-2 md:grid-cols-6">
-          {(Object.entries(designs) as Array<[DesignType, DesignConfig]>).map(
-            ([designKey, designConfig]) => (
-              <button
-                key={designKey}
-                onClick={() => setSelectedDesign(designKey)}
-                className={`flex flex-col items-center gap-1 rounded-lg border-2 p-2 transition-all ${
-                  selectedDesign === designKey
-                    ? "border-foreground ring-2 ring-foreground ring-offset-2"
-                    : "border-border hover:border-foreground"
-                }`}
+          {/* Photos */}
+          <div className="flex flex-col gap-1.5 relative z-10">
+            {photos.slice(0, 4).map((photo, index) => (
+              <div
+                key={index}
+                className={`overflow-hidden ${design.frameClass}`}
               >
-                <span className="text-2xl">{designConfig.emoji}</span>
-                <span className="text-xs font-medium">{designConfig.name}</span>
-              </button>
-            ),
-          )}
-        </div>
-      </div>
+                <img
+                  src={photo}
+                  alt={`Photo ${index + 1}`}
+                  className="aspect-[4/3] w-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
 
-      {/* Action Buttons */}
-      <div className="flex w-full max-w-sm gap-4">
-        <Button
-          onClick={() => setSelectedDesign("valentine")}
-          variant="outline"
-          className="flex-1"
+          {/* Footer */}
+          <div
+            className={`mt-2 text-center text-[8px] font-bold tracking-wider relative z-10 ${design.footerClass}`}
+          >
+            {design.footerText}
+          </div>
+        </div>
+
+        {/* Frame Selection */}
+        <div className="animate-fade-in-up-delay-3 w-full max-w-md">
+          <div className="grid grid-cols-3 gap-3 md:grid-cols-6">
+            {(Object.entries(designs) as Array<[DesignType, DesignConfig]>).map(
+              ([designKey, designConfig]) => (
+                <button
+                  key={designKey}
+                  onClick={() => setSelectedDesign(designKey)}
+                  className={`group flex flex-col items-center gap-1.5 rounded-2xl p-3 transition-all duration-300 ${
+                    selectedDesign === designKey
+                      ? "bg-black dark:bg-white text-white dark:text-black scale-105"
+                      : "bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white"
+                  }`}
+                >
+                  <span className="text-xl transition-transform duration-300 group-hover:scale-110">
+                    {designConfig.emoji}
+                  </span>
+                  <span className="text-[10px] font-medium tracking-wide">
+                    {designConfig.name}
+                  </span>
+                </button>
+              ),
+            )}
+          </div>
+        </div>
+
+        {/* Continue Button */}
+        <button
+          onClick={() => onComplete(selectedDesign)}
+          className="group relative mt-2"
         >
-          Reset
-        </Button>
-        <Button onClick={() => onComplete(selectedDesign)} className="flex-1">
-          Continue
-        </Button>
+          <span className="text-lg font-medium tracking-widest text-black/80 dark:text-white/80 uppercase transition-all group-hover:text-black dark:group-hover:text-white group-hover:tracking-[0.3em]">
+            Continue
+          </span>
+          <span className="absolute -bottom-2 left-1/2 h-px w-0 -translate-x-1/2 bg-black dark:bg-white transition-all duration-500 group-hover:w-full" />
+        </button>
       </div>
     </div>
   );
