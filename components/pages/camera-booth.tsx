@@ -21,8 +21,8 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
   const [showFlash, setShowFlash] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
 
-  const totalPhotosToCapture = 3;
-  const requiredPhotos = 3; // Frame has 4 photo slots
+  const totalPhotosToCapture = 9;
+  const requiredPhotos = layout === "single" ? 4 : 3;
 
   // Request camera permission
   useEffect(() => {
@@ -70,8 +70,8 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
     }
 
     // Show countdown
-    setCountdown(2);
-    let count = 2;
+    setCountdown(10);
+    let count = 10;
     const countdownInterval = setInterval(() => {
       count -= 1;
       if (count <= 0) {
