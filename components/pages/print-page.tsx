@@ -316,7 +316,7 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
   const handlePrint = () => {
     if (!downloadUrl) return;
 
-    const printWindow = window.open("", "", "height=800,width=400");
+    const printWindow = window.open("", "", "height=800,width=1200");
     if (!printWindow) return;
 
     printWindow.document.write(`
@@ -326,8 +326,8 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
         <title>MAUSAiC Photo Strip</title>
         <style>
           @page {
-            size: 2in 6in;
-            margin: 0;
+            size: A4 landscape;
+            margin: 0.25in;
           }
           * {
             margin: 0;
@@ -335,11 +335,15 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
             box-sizing: border-box;
           }
           body {
+            background: white;
+          }
+          .print-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #f0f0f0;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 0.25in;
+            padding: 0;
           }
           img {
             width: 2in;
@@ -350,6 +354,13 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
             body {
               background: white;
             }
+            .print-container {
+              display: flex;
+              flex-direction: row;
+              justify-content: flex-start;
+              align-items: flex-start;
+              gap: 0.25in;
+            }
             img {
               width: 2in;
               height: 6in;
@@ -358,7 +369,11 @@ export function PrintPage({ photos, design, layout, onReset }: PrintPageProps) {
         </style>
       </head>
       <body>
-        <img src="${downloadUrl}" alt="Photo Strip" />
+        <div class="print-container">
+          <img src="${downloadUrl}" alt="Photo Strip 1" />
+          <img src="${downloadUrl}" alt="Photo Strip 2" />
+          <img src="${downloadUrl}" alt="Photo Strip 3" />
+        </div>
       </body>
       </html>
     `);
