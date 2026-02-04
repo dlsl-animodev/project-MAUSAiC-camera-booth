@@ -23,8 +23,8 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
   const [showFlash, setShowFlash] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
 
-  const totalPhotosToCapture = 9;
-  const requiredPhotos = layout === "single" ? 4 : 3;
+  const totalPhotosToCapture = 3;
+  const requiredPhotos = 3; // Frame has 4 photo slots
 
   // Request camera permission
   useEffect(() => {
@@ -190,7 +190,8 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
             Select Your Photos
           </h1>
           <p className="text-background/70">
-            Choose {requiredPhotos} photos for your strip ({selectedPhotos.length}/{requiredPhotos} selected)
+            Choose {requiredPhotos} photos for your strip (
+            {selectedPhotos.length}/{requiredPhotos} selected)
           </p>
         </div>
 
@@ -199,7 +200,8 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
           {capturedPhotos.map((photo, index) => {
             const isSelected = selectedPhotos.includes(index);
             const selectionOrder = selectedPhotos.indexOf(index) + 1;
-            const canSelect = selectedPhotos.length < requiredPhotos || isSelected;
+            const canSelect =
+              selectedPhotos.length < requiredPhotos || isSelected;
 
             return (
               <button
@@ -210,8 +212,8 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
                   isSelected
                     ? "border-green-500 ring-2 ring-green-500"
                     : canSelect
-                    ? "border-background/50 hover:border-background"
-                    : "border-background/20 opacity-50 cursor-not-allowed"
+                      ? "border-background/50 hover:border-background"
+                      : "border-background/20 opacity-50 cursor-not-allowed"
                 }`}
               >
                 <img
@@ -233,14 +235,6 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
 
         {/* Controls */}
         <div className="mt-4 flex gap-4">
-          <Button
-            onClick={handleRetry}
-            variant="outline"
-            size="lg"
-            className="h-12 w-32 border-2 border-background text-background hover:bg-background/20 bg-transparent"
-          >
-            Retake
-          </Button>
           <Button
             onClick={handleContinue}
             size="lg"
@@ -288,8 +282,8 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
 
         {/* Photo Counter */}
         <div className="text-xl font-bold text-background">
-          {phase === "capturing" 
-            ? `Capturing: ${photoCount} / ${totalPhotosToCapture}` 
+          {phase === "capturing"
+            ? `Capturing: ${photoCount} / ${totalPhotosToCapture}`
             : "Ready to capture 9 photos"}
         </div>
       </div>

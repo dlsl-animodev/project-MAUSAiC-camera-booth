@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface DesignSelectProps {
   photos: string[];
@@ -11,73 +10,223 @@ interface DesignSelectProps {
 }
 
 export type DesignType =
-  | "classic"
-  | "modern"
-  | "retro"
-  | "minimal"
-  | "colorful"
-  | "elegant";
+  | "valentine"
+  | "marquee"
+  | "candy"
+  | "neon"
+  | "vintage"
+  | "classic";
 
 interface DesignConfig {
   name: string;
+  emoji: string;
+  stripClass: string;
+  frameClass: string;
+  footerClass: string;
+  footerText: string;
+  // For canvas rendering
+  background: string;
   borderColor: string;
-  backgroundColor: string;
+  photoBorder: string;
   textColor: string;
-  accent: string;
-  pattern?: string;
+  decoration?: string;
 }
 
 export const designs: Record<DesignType, DesignConfig> = {
+  valentine: {
+    name: "Valentine",
+    emoji: "❤️",
+    stripClass:
+      "bg-gradient-to-b from-[#8b0000] via-[#dc143c] to-[#8b0000] border-[5px] border-white",
+    frameClass:
+      "border-[3px] border-[#ffb6c1] rounded shadow-[0_0_20px_rgba(255,182,193,0.4)]",
+    footerClass: "text-white",
+    footerText: "Photobooth by MAUSAiC",
+    background:
+      "linear-gradient(180deg, #8b0000 0%, #dc143c 50%, #8b0000 100%)",
+    borderColor: "#ffffff",
+    photoBorder: "#ffb6c1",
+    textColor: "#ffffff",
+    decoration: "hearts",
+  },
+  marquee: {
+    name: "Marquee",
+    emoji: "⭐",
+    stripClass:
+      "bg-gradient-to-b from-[#2c1810] via-[#5c3a1f] to-[#2c1810] border-[5px] border-[#8b4513] shadow-[inset_0_0_20px_rgba(255,215,0,0.6),0_0_30px_rgba(255,215,0,0.3)]",
+    frameClass:
+      "border-[3px] border-[#d4af37] rounded shadow-[0_4px_15px_rgba(0,0,0,0.5),0_0_20px_rgba(255,215,0,0.5)]",
+    footerClass: "text-[#ffd700]",
+    footerText: "Photobooth by MAUSAiC",
+    background:
+      "linear-gradient(180deg, #2c1810 0%, #5c3a1f 50%, #2c1810 100%)",
+    borderColor: "#8b4513",
+    photoBorder: "#d4af37",
+    textColor: "#ffd700",
+    decoration: "marquee",
+  },
+  candy: {
+    name: "Candy",
+    emoji: "🍬",
+    stripClass:
+      "bg-gradient-to-b from-[#fff0f5] via-[#ffe4e9] to-[#fff0f5] border-[5px] border-[#ff69b4]",
+    frameClass: "border-[3px] border-[#ffb6c1] rounded shadow-sm",
+    footerClass: "text-[#c71585]",
+    footerText: "Photobooth by MAUSAiC",
+    background:
+      "linear-gradient(180deg, #fff0f5 0%, #ffe4e9 50%, #fff0f5 100%)",
+    borderColor: "#ff69b4",
+    photoBorder: "#ffb6c1",
+    textColor: "#c71585",
+    decoration: "candy",
+  },
+  neon: {
+    name: "Neon",
+    emoji: "⚡",
+    stripClass:
+      "bg-gradient-to-b from-[#0a0e27] via-[#1a1f3a] to-[#0a0e27] border-[5px] border-[#00ffff] shadow-[inset_0_0_20px_#00ffff,0_0_30px_rgba(0,255,255,0.4)]",
+    frameClass:
+      "border-[3px] border-[#ff00ff] rounded shadow-[0_0_8px_#ff00ff,inset_0_0_8px_rgba(255,0,255,0.2)]",
+    footerClass: "text-[#00ff00] drop-shadow-[0_0_10px_#00ff00]",
+    footerText: "Photobooth by MAUSAiC",
+    background:
+      "linear-gradient(180deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%)",
+    borderColor: "#00ffff",
+    photoBorder: "#ff00ff",
+    textColor: "#00ff00",
+    decoration: "neon",
+  },
+  vintage: {
+    name: "Vintage",
+    emoji: "📽️",
+    stripClass:
+      "bg-gradient-to-b from-[#f5e6d3] via-[#e8d7c3] to-[#f5e6d3] border-[5px] border-[#8b7355]",
+    frameClass:
+      "border-[3px] border-[#a0826d] rounded-sm shadow-[0_2px_4px_rgba(0,0,0,0.15)]",
+    footerClass: "text-[#5c4033] font-mono",
+    footerText: "Photobooth by MAUSAiC",
+    background:
+      "linear-gradient(180deg, #f5e6d3 0%, #e8d7c3 50%, #f5e6d3 100%)",
+    borderColor: "#8b7355",
+    photoBorder: "#a0826d",
+    textColor: "#5c4033",
+  },
   classic: {
     name: "Classic",
-    borderColor: "#000000",
-    backgroundColor: "#ffffff",
-    textColor: "#000000",
-    accent: "#000000",
-  },
-  modern: {
-    name: "Modern",
-    borderColor: "#3b82f6",
-    backgroundColor: "#0f172a",
-    textColor: "#ffffff",
-    accent: "#3b82f6",
-  },
-  retro: {
-    name: "Retro",
-    borderColor: "#f59e0b",
-    backgroundColor: "#fef3c7",
-    textColor: "#92400e",
-    accent: "#f59e0b",
-  },
-  minimal: {
-    name: "Minimal",
-    borderColor: "#e5e7eb",
-    backgroundColor: "#f9fafb",
-    textColor: "#374151",
-    accent: "#9ca3af",
-  },
-  colorful: {
-    name: "Colorful",
-    borderColor: "#ec4899",
-    backgroundColor: "#fdf4ff",
-    textColor: "#86198f",
-    accent: "#a855f7",
-  },
-  elegant: {
-    name: "Elegant",
-    borderColor: "#d4af37",
-    backgroundColor: "#1a1a2e",
-    textColor: "#d4af37",
-    accent: "#d4af37",
+    emoji: "✨",
+    stripClass:
+      "bg-gradient-to-b from-white to-[#f8f9fa] border-[5px] border-[#2c3e50]",
+    frameClass:
+      "border-[3px] border-[#34495e] rounded shadow-[0_2px_6px_rgba(0,0,0,0.15)]",
+    footerClass: "text-[#2c3e50]",
+    footerText: "Photobooth by MAUSAiC",
+    background: "linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)",
+    borderColor: "#2c3e50",
+    photoBorder: "#34495e",
+    textColor: "#2c3e50",
   },
 };
+
+// Floating hearts decoration
+const FloatingHearts = () => (
+  <div className="absolute inset-0 pointer-events-none overflow-hidden z-[1]">
+    {["❤", "💕", "♥", "💕", "❤", "♥"].map((heart, i) => (
+      <div
+        key={i}
+        className="absolute text-xl opacity-60 animate-pulse"
+        style={{
+          top: `${[5, 5, 30, 50, 70, 90][i]}%`,
+          left: i % 2 === 0 ? "5%" : undefined,
+          right: i % 2 === 1 ? "5%" : undefined,
+          animationDelay: `${i * 0.5}s`,
+        }}
+      >
+        {heart}
+      </div>
+    ))}
+  </div>
+);
+
+// Marquee lights decoration
+const MarqueeLights = () => (
+  <div className="absolute inset-0 pointer-events-none z-[5]">
+    {/* Top lights */}
+    {[12, 25, 38, 51, 64, 77, 90].map((left, i) => (
+      <div
+        key={`top-${i}`}
+        className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
+        style={{
+          left: `${left}%`,
+          top: "8px",
+          animationDelay: i % 2 === 0 ? "0s" : "0.75s",
+        }}
+      />
+    ))}
+    {/* Bottom lights */}
+    {[12, 25, 38, 51, 64, 77, 90].map((left, i) => (
+      <div
+        key={`bottom-${i}`}
+        className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
+        style={{
+          left: `${left}%`,
+          bottom: "8px",
+          animationDelay: i % 2 === 0 ? "0s" : "0.75s",
+        }}
+      />
+    ))}
+    {/* Left lights */}
+    {[10, 25, 40, 55, 70, 85].map((top, i) => (
+      <div
+        key={`left-${i}`}
+        className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
+        style={{
+          left: "8px",
+          top: `${top}%`,
+          animationDelay: i % 2 === 0 ? "0s" : "0.75s",
+        }}
+      />
+    ))}
+    {/* Right lights */}
+    {[10, 25, 40, 55, 70, 85].map((top, i) => (
+      <div
+        key={`right-${i}`}
+        className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
+        style={{
+          right: "8px",
+          top: `${top}%`,
+          animationDelay: i % 2 === 0 ? "0s" : "0.75s",
+        }}
+      />
+    ))}
+  </div>
+);
+
+// Candy stripes decoration
+const CandyStripes = () => (
+  <>
+    <div
+      className="absolute top-0 left-0 right-0 h-7 z-[5]"
+      style={{
+        background:
+          "repeating-linear-gradient(90deg, #ff69b4 0px, #ff69b4 8px, #ffb6c1 8px, #ffb6c1 16px)",
+      }}
+    />
+    <div
+      className="absolute bottom-0 left-0 right-0 h-7 z-[5]"
+      style={{
+        background:
+          "repeating-linear-gradient(90deg, #ff69b4 0px, #ff69b4 8px, #ffb6c1 8px, #ffb6c1 16px)",
+      }}
+    />
+  </>
+);
 
 export function DesignSelect({
   photos,
   layout,
   onComplete,
 }: DesignSelectProps) {
-  const [selectedDesign, setSelectedDesign] = useState<DesignType>("classic");
+  const [selectedDesign, setSelectedDesign] = useState<DesignType>("valentine");
 
   const design = designs[selectedDesign];
 
@@ -86,51 +235,47 @@ export function DesignSelect({
       {/* Title */}
       <div className="flex flex-col items-center gap-1">
         <h1 className="text-balance text-center text-2xl font-bold text-foreground md:text-3xl">
-          Choose Your Design
+          Choose Your Frame
         </h1>
         <p className="text-sm text-muted-foreground">
-          Pick a frame design for your strip
+          Pick a theme for your strip
         </p>
       </div>
 
-      {/* Photo Strip Preview */}
-      <Card
-        className="border-4 p-3 transition-all duration-300"
-        style={{
-          borderColor: design.borderColor,
-          backgroundColor: design.backgroundColor,
-        }}
+      {/* Frame Preview with Photos */}
+      <div
+        className={`relative w-40 md:w-48 rounded-xl p-3 shadow-[0_20px_60px_rgba(0,0,0,0.4)] transition-transform hover:scale-[1.02] ${design.stripClass}`}
       >
-        <CardContent className="p-0">
-          <div className="flex flex-col gap-1.5 w-24 md:w-32">
-            {photos.map((photo, index) => (
-              <div
-                key={index}
-                className="overflow-hidden rounded-sm"
-                style={{ border: `2px solid ${design.borderColor}` }}
-              >
-                <img
-                  src={photo || "/placeholder.svg"}
-                  alt={`Photo ${index + 1}`}
-                  className="aspect-[4/3] w-full object-cover"
-                />
-              </div>
-            ))}
-            {/* Footer text */}
-            <div
-              className="mt-1 text-center text-xs font-bold tracking-wider"
-              style={{ color: design.textColor }}
-            >
-              📸 PHOTO BOOTH
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Decorations */}
+        {design.decoration === "hearts" && <FloatingHearts />}
+        {design.decoration === "marquee" && <MarqueeLights />}
+        {design.decoration === "candy" && <CandyStripes />}
 
-      {/* Design Selection */}
-      <div className="w-full max-w-xl">
+        {/* Photos */}
+        <div className="flex flex-col gap-2 relative z-10">
+          {photos.slice(0, 4).map((photo, index) => (
+            <div key={index} className={`overflow-hidden ${design.frameClass}`}>
+              <img
+                src={photo}
+                alt={`Photo ${index + 1}`}
+                className="aspect-[4/3] w-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div
+          className={`mt-2 text-center text-[10px] font-bold tracking-wider relative z-10 ${design.footerClass}`}
+        >
+          {design.footerText}
+        </div>
+      </div>
+
+      {/* Frame Selection */}
+      <div className="w-full max-w-lg">
         <h3 className="mb-2 text-center text-sm font-semibold text-foreground">
-          Select a Frame Design
+          Select a Theme
         </h3>
         <div className="grid grid-cols-3 gap-2 md:grid-cols-6">
           {(Object.entries(designs) as Array<[DesignType, DesignConfig]>).map(
@@ -138,18 +283,14 @@ export function DesignSelect({
               <button
                 key={designKey}
                 onClick={() => setSelectedDesign(designKey)}
-                className={`relative overflow-hidden rounded-lg border-2 px-3 py-2 text-center text-sm font-medium transition-all ${
+                className={`flex flex-col items-center gap-1 rounded-lg border-2 p-2 transition-all ${
                   selectedDesign === designKey
-                    ? "ring-2 ring-foreground ring-offset-2"
-                    : "hover:border-foreground"
+                    ? "border-foreground ring-2 ring-foreground ring-offset-2"
+                    : "border-border hover:border-foreground"
                 }`}
-                style={{
-                  borderColor: designConfig.borderColor,
-                  backgroundColor: designConfig.backgroundColor,
-                  color: designConfig.textColor,
-                }}
               >
-                {designConfig.name}
+                <span className="text-2xl">{designConfig.emoji}</span>
+                <span className="text-xs font-medium">{designConfig.name}</span>
               </button>
             ),
           )}
@@ -159,7 +300,7 @@ export function DesignSelect({
       {/* Action Buttons */}
       <div className="flex w-full max-w-sm gap-4">
         <Button
-          onClick={() => setSelectedDesign("classic")}
+          onClick={() => setSelectedDesign("valentine")}
           variant="outline"
           className="flex-1"
         >
