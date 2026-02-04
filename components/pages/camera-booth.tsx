@@ -295,7 +295,7 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
 
           {/* Countdown Display */}
           {countdown !== null && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30 ">
               <div className="text-[120px] font-extralight text-white tabular-nums">
                 {countdown}
               </div>
