@@ -225,8 +225,10 @@ export function DesignSelect({
                 <button
                   key={frameKey}
                   onClick={() => {
-                    setPreviewLoaded(false);
-                    setSelectedFrame(frameKey);
+                    if (frameKey !== selectedFrame) {
+                      setPreviewLoaded(false);
+                      setSelectedFrame(frameKey);
+                    }
                   }}
                   className={`group flex flex-col items-center gap-2 rounded-xl p-3 transition-all duration-300 ${
                     selectedFrame === frameKey
