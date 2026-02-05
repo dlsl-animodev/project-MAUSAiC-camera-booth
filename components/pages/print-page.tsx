@@ -52,13 +52,7 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      // 2x6 inches at 300 DPI
-      const stripWidth = 600;
-      const stripHeight = 1800;
-      canvas.width = stripWidth;
-      canvas.height = stripHeight;
-
-      // Load frame image
+      // Load frame image first to get its dimensions
       const frameImg = new window.Image();
       frameImg.crossOrigin = "anonymous";
 
@@ -67,6 +61,14 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
         frameImg.onerror = () => reject(new Error("Failed to load frame"));
         frameImg.src = frameConfig.src;
       });
+
+      // Use frame's natural dimensions to maintain aspect ratio
+      // Scale up if needed to ensure good print quality (at least 600px wide)
+      const scale = Math.max(1, 600 / frameImg.naturalWidth);
+      const stripWidth = Math.round(frameImg.naturalWidth * scale);
+      const stripHeight = Math.round(frameImg.naturalHeight * scale);
+      canvas.width = stripWidth;
+      canvas.height = stripHeight;
 
       // Draw frame first (as background)
       ctx.drawImage(frameImg, 0, 0, stripWidth, stripHeight);
@@ -112,20 +114,28 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
             if (frameConfig.shape === "heart") {
               ctx.save();
               ctx.beginPath();
-              // Draw heart shape using polygon points (scaled to photo dimensions)
+              // Draw heart shape using polygon points (matching CSS clip-path exactly)
               const points = [
-                [0.5, 0.05],
-                [0.61, 0],
-                [0.78, 0],
-                [0.95, 0.05],
-                [1, 0.2],
-                [1, 0.38],
-                [0.5, 1],
-                [0, 0.38],
-                [0, 0.2],
-                [0.05, 0.05],
-                [0.22, 0],
-                [0.39, 0],
+                [0.5, 0.1],
+                [0.65, 0],
+                [0.8, 0],
+                [0.9, 0.05],
+                [0.97, 0.12],
+                [1, 0.22],
+                [1, 0.35],
+                [0.95, 0.5],
+                [0.85, 0.65],
+                [0.7, 0.8],
+                [0.5, 0.95],
+                [0.3, 0.8],
+                [0.15, 0.65],
+                [0.05, 0.5],
+                [0, 0.35],
+                [0, 0.22],
+                [0.03, 0.12],
+                [0.1, 0.05],
+                [0.2, 0],
+                [0.35, 0],
               ];
               points.forEach(([px, py], i) => {
                 const x = photoX + px * photoWidth;
