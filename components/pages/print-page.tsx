@@ -68,7 +68,10 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
         frameImg.src = frameConfig.src;
       });
 
-      // Draw photos first (underneath the frame)
+      // Draw frame first (as background)
+      ctx.drawImage(frameImg, 0, 0, stripWidth, stripHeight);
+
+      // Draw photos on top (in the frame slots)
       for (
         let index = 0;
         index < Math.min(photos.length, frameConfig.slots);
@@ -155,9 +158,6 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
           img.src = photoSrc;
         });
       }
-
-      // Draw frame on top
-      ctx.drawImage(frameImg, 0, 0, stripWidth, stripHeight);
 
       // Convert to blob and upload to Supabase
       canvas.toBlob(async (blob) => {
