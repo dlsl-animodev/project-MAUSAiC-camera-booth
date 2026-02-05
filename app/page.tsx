@@ -5,10 +5,7 @@ import { Home } from "@/components/pages/home";
 import { LayoutSelect } from "@/components/pages/layout-select";
 import { CameraBooth } from "@/components/pages/camera-booth";
 import { PhotoCustomize } from "@/components/pages/photo-customize";
-import {
-  DesignSelect,
-  type DesignType,
-} from "@/components/pages/design-select";
+import { DesignSelect, type FrameType } from "@/components/pages/design-select";
 import { PrintPage } from "@/components/pages/print-page";
 
 type AppPage = "home" | "layout" | "camera" | "customize" | "design" | "print";
@@ -16,7 +13,7 @@ type AppPage = "home" | "layout" | "camera" | "customize" | "design" | "print";
 interface CameraState {
   photos: string[];
   layout: "single" | "double";
-  design: DesignType;
+  frame: FrameType;
 }
 
 export default function Page() {
@@ -24,7 +21,7 @@ export default function Page() {
   const [cameraState, setCameraState] = useState<CameraState>({
     photos: [],
     layout: "single",
-    design: "classic",
+    frame: "frame1",
   });
 
   const handleStartClick = () => {
@@ -46,8 +43,8 @@ export default function Page() {
     setCurrentPage("design");
   };
 
-  const handleDesignComplete = (design: DesignType) => {
-    setCameraState((prev) => ({ ...prev, design }));
+  const handleDesignComplete = (frame: FrameType) => {
+    setCameraState((prev) => ({ ...prev, frame }));
     setCurrentPage("print");
   };
 
@@ -56,7 +53,7 @@ export default function Page() {
     setCameraState({
       photos: [],
       layout: "single",
-      design: "classic",
+      frame: "frame1",
     });
   };
 
@@ -89,7 +86,7 @@ export default function Page() {
       {currentPage === "print" && (
         <PrintPage
           photos={cameraState.photos}
-          design={cameraState.design}
+          frame={cameraState.frame}
           layout={cameraState.layout}
           onReset={handleReset}
         />

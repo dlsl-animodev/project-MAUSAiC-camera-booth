@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface DesignSelectProps {
   photos: string[];
   layout: "single" | "double";
-  onComplete: (design: DesignType) => void;
+  onComplete: (frame: FrameType) => void;
 }
 
 // Floating bubble component
@@ -31,226 +31,102 @@ const FloatingBubble = ({
   />
 );
 
-export type DesignType =
-  | "valentine"
-  | "marquee"
-  | "candy"
-  | "neon"
-  | "vintage"
-  | "classic";
+export type FrameType = "frame1" | "frame2" | "frame3" | "frame4";
 
-interface DesignConfig {
+interface FrameConfig {
   name: string;
-  emoji: string;
-  stripClass: string;
-  frameClass: string;
-  footerClass: string;
-  footerText: string;
-  // For canvas rendering
-  background: string;
-  borderColor: string;
-  photoBorder: string;
-  textColor: string;
-  decoration?: string;
+  src: string;
+  slots: number; // 3 or 4 photo slots
+  shape?: "heart"; // Optional shape for photo clipping
+  // Photo slot positions (percentages of strip dimensions)
+  photoPositions: Array<{
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  }>;
 }
 
-export const designs: Record<DesignType, DesignConfig> = {
-  valentine: {
-    name: "Valentine",
-    emoji: "❤️",
-    stripClass:
-      "bg-gradient-to-b from-[#8b0000] via-[#dc143c] to-[#8b0000] border-[5px] border-white",
-    frameClass:
-      "border-[3px] border-[#ffb6c1] rounded shadow-[0_0_20px_rgba(255,182,193,0.4)]",
-    footerClass: "text-white",
-    footerText: "Photobooth by MAUSAiC",
-    background:
-      "linear-gradient(180deg, #8b0000 0%, #dc143c 50%, #8b0000 100%)",
-    borderColor: "#ffffff",
-    photoBorder: "#ffb6c1",
-    textColor: "#ffffff",
-    decoration: "hearts",
+// Frame configurations - positions are percentages
+// 2x6 inches at 300 DPI = 600x1800 pixels
+export const frames: Record<FrameType, FrameConfig> = {
+  frame1: {
+    name: "Classic 1",
+    src: "/PhotostripsArtboard-1.png",
+    slots: 4,
+    photoPositions: [
+      { top: 4.5, left: 6.5, width: 87, height: 20 },
+      { top: 27.5, left: 6.5, width: 87, height: 20 },
+      { top: 50.5, left: 6.5, width: 87, height: 20 },
+      { top: 73.5, left: 6.5, width: 87, height: 20 },
+    ],
   },
-  marquee: {
-    name: "Marquee",
-    emoji: "⭐",
-    stripClass:
-      "bg-gradient-to-b from-[#2c1810] via-[#5c3a1f] to-[#2c1810] border-[5px] border-[#8b4513] shadow-[inset_0_0_20px_rgba(255,215,0,0.6),0_0_30px_rgba(255,215,0,0.3)]",
-    frameClass:
-      "border-[3px] border-[#d4af37] rounded shadow-[0_4px_15px_rgba(0,0,0,0.5),0_0_20px_rgba(255,215,0,0.5)]",
-    footerClass: "text-[#ffd700]",
-    footerText: "Photobooth by MAUSAiC",
-    background:
-      "linear-gradient(180deg, #2c1810 0%, #5c3a1f 50%, #2c1810 100%)",
-    borderColor: "#8b4513",
-    photoBorder: "#d4af37",
-    textColor: "#ffd700",
-    decoration: "marquee",
+  frame2: {
+    name: "Classic 2",
+    src: "/PhotostripsArtboard-2.png",
+    slots: 4,
+    shape: "heart",
+    photoPositions: [
+      { top: 6.9, left: 10, width: 80, height: 23.3 },
+      { top: 28.3, left: 10, width: 80, height: 23.3 },
+      { top: 49.9, left: 10, width: 80, height: 23.3 },
+      { top: 71, left: 10, width: 80, height: 23.3 },
+    ],
   },
-  candy: {
-    name: "Candy",
-    emoji: "🍬",
-    stripClass:
-      "bg-gradient-to-b from-[#fff0f5] via-[#ffe4e9] to-[#fff0f5] border-[5px] border-[#ff69b4]",
-    frameClass: "border-[3px] border-[#ffb6c1] rounded shadow-sm",
-    footerClass: "text-[#c71585]",
-    footerText: "Photobooth by MAUSAiC",
-    background:
-      "linear-gradient(180deg, #fff0f5 0%, #ffe4e9 50%, #fff0f5 100%)",
-    borderColor: "#ff69b4",
-    photoBorder: "#ffb6c1",
-    textColor: "#c71585",
-    decoration: "candy",
+  frame3: {
+    name: "Short",
+    src: "/PhotostripsArtboard 3.jpg",
+    slots: 3,
+    photoPositions: [
+      { top: 2.4, left: 9.8, width: 80, height: 31 },
+      { top: 34.5, left: 9.8, width: 80, height: 31 },
+      { top: 66.8, left: 9.8, width: 80, height: 31 },
+    ],
   },
-  neon: {
-    name: "Neon",
-    emoji: "⚡",
-    stripClass:
-      "bg-gradient-to-b from-[#0a0e27] via-[#1a1f3a] to-[#0a0e27] border-[5px] border-[#00ffff] shadow-[inset_0_0_20px_#00ffff,0_0_30px_rgba(0,255,255,0.4)]",
-    frameClass:
-      "border-[3px] border-[#ff00ff] rounded shadow-[0_0_8px_#ff00ff,inset_0_0_8px_rgba(255,0,255,0.2)]",
-    footerClass: "text-[#00ff00] drop-shadow-[0_0_10px_#00ff00]",
-    footerText: "Photobooth by MAUSAiC",
-    background:
-      "linear-gradient(180deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%)",
-    borderColor: "#00ffff",
-    photoBorder: "#ff00ff",
-    textColor: "#00ff00",
-    decoration: "neon",
-  },
-  vintage: {
-    name: "Vintage",
-    emoji: "📽️",
-    stripClass:
-      "bg-gradient-to-b from-[#f5e6d3] via-[#e8d7c3] to-[#f5e6d3] border-[5px] border-[#8b7355]",
-    frameClass:
-      "border-[3px] border-[#a0826d] rounded-sm shadow-[0_2px_4px_rgba(0,0,0,0.15)]",
-    footerClass: "text-[#5c4033] font-mono",
-    footerText: "Photobooth by MAUSAiC",
-    background:
-      "linear-gradient(180deg, #f5e6d3 0%, #e8d7c3 50%, #f5e6d3 100%)",
-    borderColor: "#8b7355",
-    photoBorder: "#a0826d",
-    textColor: "#5c4033",
-  },
-  classic: {
-    name: "Classic",
-    emoji: "✨",
-    stripClass:
-      "bg-gradient-to-b from-white to-[#f8f9fa] border-[5px] border-[#2c3e50]",
-    frameClass:
-      "border-[3px] border-[#34495e] rounded shadow-[0_2px_6px_rgba(0,0,0,0.15)]",
-    footerClass: "text-[#2c3e50]",
-    footerText: "Photobooth by MAUSAiC",
-    background: "linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)",
-    borderColor: "#2c3e50",
-    photoBorder: "#34495e",
-    textColor: "#2c3e50",
+  frame4: {
+    name: "Classic 3",
+    src: "/PhotostripsArtboard 4.jpg",
+    slots: 4,
+    photoPositions: [
+      { top: 3, left: 8, width: 84, height: 21 },
+      { top: 26.5, left: 8, width: 84, height: 21 },
+      { top: 51, left: 8, width: 84, height: 21 },
+      { top: 74.9, left: 8, width: 84, height: 21 },
+    ],
   },
 };
 
-// Floating hearts decoration
-const FloatingHearts = () => (
-  <div className="absolute inset-0 pointer-events-none overflow-hidden z-[1]">
-    {["❤", "💕", "♥", "💕", "❤", "♥"].map((heart, i) => (
-      <div
-        key={i}
-        className="absolute text-xl opacity-60 animate-pulse"
-        style={{
-          top: `${[5, 5, 30, 50, 70, 90][i]}%`,
-          left: i % 2 === 0 ? "5%" : undefined,
-          right: i % 2 === 1 ? "5%" : undefined,
-          animationDelay: `${i * 0.5}s`,
-        }}
-      >
-        {heart}
-      </div>
-    ))}
-  </div>
-);
-
-// Marquee lights decoration
-const MarqueeLights = () => (
-  <div className="absolute inset-0 pointer-events-none z-[5]">
-    {/* Top lights */}
-    {[12, 25, 38, 51, 64, 77, 90].map((left, i) => (
-      <div
-        key={`top-${i}`}
-        className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
-        style={{
-          left: `${left}%`,
-          top: "8px",
-          animationDelay: i % 2 === 0 ? "0s" : "0.75s",
-        }}
-      />
-    ))}
-    {/* Bottom lights */}
-    {[12, 25, 38, 51, 64, 77, 90].map((left, i) => (
-      <div
-        key={`bottom-${i}`}
-        className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
-        style={{
-          left: `${left}%`,
-          bottom: "8px",
-          animationDelay: i % 2 === 0 ? "0s" : "0.75s",
-        }}
-      />
-    ))}
-    {/* Left lights */}
-    {[10, 25, 40, 55, 70, 85].map((top, i) => (
-      <div
-        key={`left-${i}`}
-        className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
-        style={{
-          left: "8px",
-          top: `${top}%`,
-          animationDelay: i % 2 === 0 ? "0s" : "0.75s",
-        }}
-      />
-    ))}
-    {/* Right lights */}
-    {[10, 25, 40, 55, 70, 85].map((top, i) => (
-      <div
-        key={`right-${i}`}
-        className="absolute w-2 h-2 bg-[#FFD700] rounded-full shadow-[0_0_8px_#FFD700,0_0_12px_#FFD700] animate-pulse"
-        style={{
-          right: "8px",
-          top: `${top}%`,
-          animationDelay: i % 2 === 0 ? "0s" : "0.75s",
-        }}
-      />
-    ))}
-  </div>
-);
-
-// Candy stripes decoration
-const CandyStripes = () => (
-  <>
-    <div
-      className="absolute top-0 left-0 right-0 h-7 z-[5]"
-      style={{
-        background:
-          "repeating-linear-gradient(90deg, #ff69b4 0px, #ff69b4 8px, #ffb6c1 8px, #ffb6c1 16px)",
-      }}
-    />
-    <div
-      className="absolute bottom-0 left-0 right-0 h-7 z-[5]"
-      style={{
-        background:
-          "repeating-linear-gradient(90deg, #ff69b4 0px, #ff69b4 8px, #ffb6c1 8px, #ffb6c1 16px)",
-      }}
-    />
-  </>
-);
+// Get available frames based on layout
+const getAvailableFrames = (layout: "single" | "double"): FrameType[] => {
+  if (layout === "double") {
+    // Only 3-slot frame for double/short layout
+    return ["frame3"];
+  } else {
+    // Only 4-slot frames for single/classic layout
+    return ["frame1", "frame2", "frame4"];
+  }
+};
 
 export function DesignSelect({
   photos,
   layout,
   onComplete,
 }: DesignSelectProps) {
-  const [selectedDesign, setSelectedDesign] = useState<DesignType>("valentine");
+  const availableFrames = getAvailableFrames(layout);
+  const [selectedFrame, setSelectedFrame] = useState<FrameType>(
+    availableFrames[0],
+  );
+  const [previewLoaded, setPreviewLoaded] = useState(false);
 
-  const design = designs[selectedDesign];
+  const frame = frames[selectedFrame];
+
+  // Reset selection when layout changes
+  useEffect(() => {
+    const available = getAvailableFrames(layout);
+    if (!available.includes(selectedFrame)) {
+      setSelectedFrame(available[0]);
+    }
+  }, [layout, selectedFrame]);
 
   return (
     <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white dark:bg-black px-6">
@@ -292,72 +168,94 @@ export function DesignSelect({
             Choose Frame
           </h1>
           <p className="animate-fade-in-up-delay-1 text-xs font-light tracking-wide text-black/50 dark:text-white/50">
-            Select a theme for your strip
+            Select a frame for your strip
           </p>
         </div>
 
         {/* Frame Preview with Photos */}
-        <div
-          className={`animate-fade-in-up-delay-2 relative w-28 md:w-36 rounded-xl p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.3)] transition-transform duration-500 hover:scale-[1.02] ${design.stripClass}`}
-        >
-          {/* Decorations */}
-          {design.decoration === "hearts" && <FloatingHearts />}
-          {design.decoration === "marquee" && <MarqueeLights />}
-          {design.decoration === "candy" && <CandyStripes />}
+        <div className="animate-fade-in-up-delay-2 relative w-32 md:w-40 shadow-[0_20px_60px_rgba(0,0,0,0.3)] transition-transform duration-500 hover:scale-[1.02]">
+          {/* Frame Template */}
+          <div className="relative" style={{ aspectRatio: "2/6" }}>
+            <img
+              src={frame.src}
+              alt={frame.name}
+              className="w-full h-full object-cover rounded-lg"
+              onLoad={() => setPreviewLoaded(true)}
+            />
 
-          {/* Photos */}
-          <div className="flex flex-col gap-1 relative z-10">
-            {photos.slice(0, 4).map((photo, index) => (
-              <div
-                key={index}
-                className={`overflow-hidden ${design.frameClass}`}
-              >
-                <img
-                  src={photo}
-                  alt={`Photo ${index + 1}`}
-                  className="aspect-[4/3] w-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Footer */}
-          <div
-            className={`mt-1.5 text-center text-[6px] font-bold tracking-wider relative z-10 ${design.footerClass}`}
-          >
-            {design.footerText}
+            {/* Photo Overlays */}
+            {previewLoaded &&
+              photos.slice(0, frame.slots).map((photo, index) => {
+                const pos = frame.photoPositions[index];
+                if (!pos) return null;
+                const isHeart = frame.shape === "heart";
+                return (
+                  <div
+                    key={index}
+                    className="absolute overflow-hidden"
+                    style={{
+                      top: `${pos.top}%`,
+                      left: `${pos.left}%`,
+                      width: `${pos.width}%`,
+                      height: `${pos.height}%`,
+                      clipPath: isHeart
+                        ? "polygon(50% 10%, 65% 0%, 80% 0%, 90% 5%, 97% 12%, 100% 22%, 100% 35%, 95% 50%, 85% 65%, 70% 80%, 50% 95%, 30% 80%, 15% 65%, 5% 50%, 0% 35%, 0% 22%, 3% 12%, 10% 5%, 20% 0%, 35% 0%)"
+                        : undefined,
+                    }}
+                  >
+                    <img
+                      src={photo}
+                      alt={`Photo ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                );
+              })}
           </div>
         </div>
 
         {/* Frame Selection */}
         <div className="animate-fade-in-up-delay-3 w-full max-w-sm">
-          <div className="grid grid-cols-6 gap-2">
-            {(Object.entries(designs) as Array<[DesignType, DesignConfig]>).map(
-              ([designKey, designConfig]) => (
+          <div
+            className={`grid gap-3 ${availableFrames.length === 1 ? "grid-cols-1 max-w-[120px] mx-auto" : "grid-cols-3"}`}
+          >
+            {availableFrames.map((frameKey) => {
+              const frameConfig = frames[frameKey];
+              return (
                 <button
-                  key={designKey}
-                  onClick={() => setSelectedDesign(designKey)}
-                  className={`group flex flex-col items-center gap-1 rounded-xl p-2 transition-all duration-300 ${
-                    selectedDesign === designKey
+                  key={frameKey}
+                  onClick={() => {
+                    if (frameKey !== selectedFrame) {
+                      setPreviewLoaded(false);
+                      setSelectedFrame(frameKey);
+                    }
+                  }}
+                  className={`group flex flex-col items-center gap-2 rounded-xl p-3 transition-all duration-300 ${
+                    selectedFrame === frameKey
                       ? "bg-black dark:bg-white text-white dark:text-black scale-105"
                       : "bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-black dark:text-white"
                   }`}
                 >
-                  <span className="text-lg transition-transform duration-300 group-hover:scale-110">
-                    {designConfig.emoji}
-                  </span>
-                  <span className="text-[8px] font-medium tracking-wide">
-                    {designConfig.name}
+                  {/* Mini frame preview */}
+                  <div className="w-8 h-24 rounded overflow-hidden border border-current/20">
+                    <img
+                      src={frameConfig.src}
+                      alt={frameConfig.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-[10px] font-medium tracking-wide">
+                    {frameConfig.name}
                   </span>
                 </button>
-              ),
-            )}
+              );
+            })}
           </div>
         </div>
 
         {/* Continue Button */}
         <button
-          onClick={() => onComplete(selectedDesign)}
+          onClick={() => onComplete(selectedFrame)}
           className="group relative"
         >
           <span className="text-base font-medium tracking-widest text-black/80 dark:text-white/80 uppercase transition-all group-hover:text-black dark:group-hover:text-white group-hover:tracking-[0.3em]">
