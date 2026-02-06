@@ -55,10 +55,10 @@ export const frames: Record<FrameType, FrameConfig> = {
     src: "/PhotostripsArtboard-1.png",
     slots: 4,
     photoPositions: [
-      { top: 4.5, left: 6.5, width: 87, height: 20 },
-      { top: 27.5, left: 6.5, width: 87, height: 20 },
-      { top: 50.5, left: 6.5, width: 87, height: 20 },
-      { top: 73.5, left: 6.5, width: 87, height: 20 },
+      { top: 4.7, left: 6.5, width: 87, height: 21 },
+      { top: 26.7, left: 6.5, width: 87, height: 21 },
+      { top: 48.7, left: 6.5, width: 87, height: 21 },
+      { top: 70.7, left: 6.5, width: 87, height: 21 },
     ],
   },
   frame2: {
@@ -88,10 +88,10 @@ export const frames: Record<FrameType, FrameConfig> = {
     src: "/PhotostripsArtboard 4.jpg",
     slots: 4,
     photoPositions: [
-      { top: 3, left: 8, width: 84, height: 21 },
-      { top: 26.5, left: 8, width: 84, height: 21 },
-      { top: 51, left: 8, width: 84, height: 21 },
-      { top: 74.9, left: 8, width: 84, height: 21 },
+      { top: 1.9, left: 6.8, width: 87, height: 23.2 },
+      { top: 26, left: 6.8, width: 87, height: 23.2 },
+      { top: 49.95, left: 6.8, width: 87, height: 23.2 },
+      { top: 74.1, left: 6.8, width: 87, height: 23.2 },
     ],
   },
 };
