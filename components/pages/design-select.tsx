@@ -78,9 +78,9 @@ export const frames: Record<FrameType, FrameConfig> = {
     src: "/PhotostripsArtboard 3.jpg",
     slots: 3,
     photoPositions: [
-      { top: 2.4, left: 9.8, width: 80, height: 31 },
-      { top: 34.5, left: 9.8, width: 80, height: 31 },
-      { top: 66.8, left: 9.8, width: 80, height: 31 },
+      { top: 2.3, left: 9.9, width: 80, height: 31.2 },
+      { top: 34.45, left: 9.9, width: 80, height: 31.2 },
+      { top: 66.5, left: 9.9, width: 80, height: 31.5 },
     ],
   },
   frame4: {
