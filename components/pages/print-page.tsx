@@ -285,9 +285,10 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
             padding: 0.5in;
           }
           .strip-wrapper {
-            /* 2x6 inch image + padding for cutting guides */
-            width: 2.25in;
-            height: 6.25in;
+            /* Strip content is 2x6 inches, padding is extra for cutting */
+            box-sizing: content-box;
+            width: 2in;
+            height: 6in;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -297,8 +298,8 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
             background: white;
           }
           img {
-            width: 2in;
-            height: 6in;
+            width: 100%;
+            height: 100%;
             object-fit: contain;
             display: block;
           }
@@ -319,14 +320,15 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
               padding: 0.5in;
             }
             .strip-wrapper {
-              width: 2.25in;
-              height: 6.25in;
+              box-sizing: content-box;
+              width: 2in;
+              height: 6in;
               border: 1px dashed #ccc;
               padding: 0.125in;
             }
             img {
-              width: 2in;
-              height: 6in;
+              width: 100%;
+              height: 100%;
             }
           }
         </style>
