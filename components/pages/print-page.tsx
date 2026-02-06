@@ -62,11 +62,11 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
         frameImg.src = frameConfig.src;
       });
 
-      // Use frame's natural dimensions to maintain aspect ratio
-      // Scale up if needed to ensure good print quality (at least 600px wide)
-      const scale = Math.max(1, 600 / frameImg.naturalWidth);
-      const stripWidth = Math.round(frameImg.naturalWidth * scale);
-      const stripHeight = Math.round(frameImg.naturalHeight * scale);
+      // Fixed 2x6 inch strip at 300 DPI for print quality
+      // 2 inches × 300 DPI = 600 pixels width
+      // 6 inches × 300 DPI = 1800 pixels height
+      const stripWidth = 600;
+      const stripHeight = 1800;
       canvas.width = stripWidth;
       canvas.height = stripHeight;
 
@@ -248,6 +248,10 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
     const printWindow = window.open("", "", "height=800,width=1200");
     if (!printWindow) return;
 
+    // A4 landscape: 297mm x 210mm (11.69in x 8.27in)
+    // Photo strip: 2in x 6in with 0.125in padding for cutting = 2.25in x 6.25in per strip
+    // Can fit 4 strips horizontally: 4 * 2.25in = 9in (fits in 11.69in)
+    // Vertical centering: (8.27in - 6.25in) / 2 = ~1in top margin
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
@@ -256,39 +260,69 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
         <style>
           @page {
             size: A4 landscape;
-            margin: 0.25in;
+            margin: 0;
           }
           * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
           }
-          body {
+          html, body {
+            width: 297mm;
+            height: 210mm;
             background: white;
           }
           .print-container {
+            width: 297mm;
+            height: 210mm;
             display: flex;
             flex-direction: row;
-            justify-content: flex-start;
-            align-items: flex-start;
+            justify-content: center;
+            align-items: center;
             gap: 0.25in;
-            padding: 0;
+            padding: 0.5in;
+          }
+          .strip-wrapper {
+            /* 2x6 inch image + padding for cutting guides */
+            width: 2.25in;
+            height: 6.25in;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Light dotted border as cutting guide */
+            border: 1px dashed #ccc;
+            padding: 0.125in;
+            background: white;
           }
           img {
             width: 2in;
             height: 6in;
             object-fit: contain;
+            display: block;
           }
           @media print {
-            body {
+            html, body {
+              width: 297mm;
+              height: 210mm;
               background: white;
             }
             .print-container {
+              width: 297mm;
+              height: 210mm;
               display: flex;
               flex-direction: row;
-              justify-content: flex-start;
-              align-items: flex-start;
+              justify-content: center;
+              align-items: center;
               gap: 0.25in;
+              padding: 0.5in;
+            }
+            .strip-wrapper {
+              width: 2.25in;
+              height: 6.25in;
+              border: 1px dashed #ccc;
+              padding: 0.125in;
             }
             img {
               width: 2in;
@@ -299,9 +333,15 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
       </head>
       <body>
         <div class="print-container">
-          <img src="${downloadUrl}" alt="Photo Strip 1" />
-          <img src="${downloadUrl}" alt="Photo Strip 2" />
-          <img src="${downloadUrl}" alt="Photo Strip 3" />
+          <div class="strip-wrapper">
+            <img src="${downloadUrl}" alt="Photo Strip 1" />
+          </div>
+          <div class="strip-wrapper">
+            <img src="${downloadUrl}" alt="Photo Strip 2" />
+          </div>
+          <div class="strip-wrapper">
+            <img src="${downloadUrl}" alt="Photo Strip 3" />
+          </div>
         </div>
       </body>
       </html>
