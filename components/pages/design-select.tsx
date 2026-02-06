@@ -67,10 +67,10 @@ export const frames: Record<FrameType, FrameConfig> = {
     slots: 4,
     shape: "heart",
     photoPositions: [
-      { top: 6.9, left: 10, width: 80, height: 23.3 },
-      { top: 28.3, left: 10, width: 80, height: 23.3 },
-      { top: 49.9, left: 10, width: 80, height: 23.3 },
-      { top: 71, left: 10, width: 80, height: 23.3 },
+      { top: 6.5, left: 8.7, width: 82.4, height: 23.8 },
+      { top: 27.8, left: 8.7, width: 82.4, height: 23.8 },
+      { top: 49.4, left: 8.7, width: 82.4, height: 23.8 },
+      { top: 70.6, left: 8.7, width: 82.4, height: 23.8 },
     ],
   },
   frame3: {
@@ -199,7 +199,7 @@ export function DesignSelect({
                       width: `${pos.width}%`,
                       height: `${pos.height}%`,
                       clipPath: isHeart
-                        ? "polygon(50% 10%, 65% 0%, 80% 0%, 90% 5%, 97% 12%, 100% 22%, 100% 35%, 95% 50%, 85% 65%, 70% 80%, 50% 95%, 30% 80%, 15% 65%, 5% 50%, 0% 35%, 0% 22%, 3% 12%, 10% 5%, 20% 0%, 35% 0%)"
+                        ? "polygon(50% 15%, 55% 10%, 60% 6%, 66% 3%, 73% 1%, 80% 0%, 86% 1%, 91% 4%, 95% 9%, 98% 15%, 100% 22%, 100% 30%, 98% 39%, 94% 48%, 88% 57%, 80% 66%, 70% 76%, 60% 86%, 50% 97%, 40% 86%, 30% 76%, 20% 66%, 12% 57%, 6% 48%, 2% 39%, 0% 30%, 0% 22%, 2% 15%, 5% 9%, 9% 4%, 14% 1%, 20% 0%, 27% 1%, 34% 3%, 40% 6%, 45% 10%)"
                         : undefined,
                     }}
                   >
