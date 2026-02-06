@@ -22,7 +22,7 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
   const [photoCount, setPhotoCount] = useState(0);
 
   const totalPhotosToCapture = 4;
-  const requiredPhotos = layout === "single" ? 4 : 3;
+  const requiredPhotos = layout === "single" ? 9 : 6;
 
   // Request camera permission
   useEffect(() => {
