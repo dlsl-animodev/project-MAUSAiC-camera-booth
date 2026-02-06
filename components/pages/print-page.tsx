@@ -114,35 +114,70 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
             if (frameConfig.shape === "heart") {
               ctx.save();
               ctx.beginPath();
-              // Draw heart shape using polygon points (matching CSS clip-path exactly)
-              const points = [
-                [0.5, 0.1],
-                [0.65, 0],
-                [0.8, 0],
-                [0.9, 0.05],
-                [0.97, 0.12],
-                [1, 0.22],
-                [1, 0.35],
-                [0.95, 0.5],
-                [0.85, 0.65],
-                [0.7, 0.8],
-                [0.5, 0.95],
-                [0.3, 0.8],
-                [0.15, 0.65],
-                [0.05, 0.5],
-                [0, 0.35],
-                [0, 0.22],
-                [0.03, 0.12],
-                [0.1, 0.05],
-                [0.2, 0],
-                [0.35, 0],
-              ];
-              points.forEach(([px, py], i) => {
-                const x = photoX + px * photoWidth;
-                const y = photoY + py * photoHeight;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-              });
+              // Draw heart shape using bezier curves for smooth result
+              const cx = photoX + photoWidth / 2;
+              const top = photoY;
+              const bottom = photoY + photoHeight;
+              const left = photoX;
+              const right = photoX + photoWidth;
+              const height = photoHeight;
+              const width = photoWidth;
+
+              // Start at bottom point
+              ctx.moveTo(cx, bottom - height * 0.03);
+              // Left side curve
+              ctx.bezierCurveTo(
+                left + width * 0.2,
+                top + height * 0.75,
+                left,
+                top + height * 0.55,
+                left,
+                top + height * 0.3,
+              );
+              // Left top lobe
+              ctx.bezierCurveTo(
+                left,
+                top + height * 0.12,
+                left + width * 0.12,
+                top,
+                left + width * 0.28,
+                top,
+              );
+              // To center dip
+              ctx.bezierCurveTo(
+                left + width * 0.38,
+                top,
+                left + width * 0.46,
+                top + height * 0.06,
+                cx,
+                top + height * 0.15,
+              );
+              // Right top lobe
+              ctx.bezierCurveTo(
+                right - width * 0.46,
+                top + height * 0.06,
+                right - width * 0.38,
+                top,
+                right - width * 0.28,
+                top,
+              );
+              ctx.bezierCurveTo(
+                right - width * 0.12,
+                top,
+                right,
+                top + height * 0.12,
+                right,
+                top + height * 0.3,
+              );
+              // Right side curve back to bottom
+              ctx.bezierCurveTo(
+                right,
+                top + height * 0.55,
+                right - width * 0.2,
+                top + height * 0.75,
+                cx,
+                bottom - height * 0.03,
+              );
               ctx.closePath();
               ctx.clip();
             }
