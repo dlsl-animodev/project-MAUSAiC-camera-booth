@@ -122,43 +122,61 @@ export function PrintPage({ photos, frame, layout, onReset }: PrintPageProps) {
               const right = photoX + photoWidth;
               const height = photoHeight;
               const width = photoWidth;
-              
+
               // Start at bottom point
               ctx.moveTo(cx, bottom - height * 0.03);
               // Left side curve
               ctx.bezierCurveTo(
-                left + width * 0.2, top + height * 0.75,
-                left, top + height * 0.55,
-                left, top + height * 0.30
+                left + width * 0.2,
+                top + height * 0.75,
+                left,
+                top + height * 0.55,
+                left,
+                top + height * 0.3,
               );
               // Left top lobe
               ctx.bezierCurveTo(
-                left, top + height * 0.12,
-                left + width * 0.12, top,
-                left + width * 0.28, top
+                left,
+                top + height * 0.12,
+                left + width * 0.12,
+                top,
+                left + width * 0.28,
+                top,
               );
               // To center dip
               ctx.bezierCurveTo(
-                left + width * 0.38, top,
-                left + width * 0.46, top + height * 0.06,
-                cx, top + height * 0.15
+                left + width * 0.38,
+                top,
+                left + width * 0.46,
+                top + height * 0.06,
+                cx,
+                top + height * 0.15,
               );
               // Right top lobe
               ctx.bezierCurveTo(
-                right - width * 0.46, top + height * 0.06,
-                right - width * 0.38, top,
-                right - width * 0.28, top
+                right - width * 0.46,
+                top + height * 0.06,
+                right - width * 0.38,
+                top,
+                right - width * 0.28,
+                top,
               );
               ctx.bezierCurveTo(
-                right - width * 0.12, top,
-                right, top + height * 0.12,
-                right, top + height * 0.30
+                right - width * 0.12,
+                top,
+                right,
+                top + height * 0.12,
+                right,
+                top + height * 0.3,
               );
               // Right side curve back to bottom
               ctx.bezierCurveTo(
-                right, top + height * 0.55,
-                right - width * 0.2, top + height * 0.75,
-                cx, bottom - height * 0.03
+                right,
+                top + height * 0.55,
+                right - width * 0.2,
+                top + height * 0.75,
+                cx,
+                bottom - height * 0.03,
               );
               ctx.closePath();
               ctx.clip();
