@@ -21,8 +21,8 @@ export function CameraBooth({ layout, onPhotosCapture }: CameraBoothProps) {
   const [showFlash, setShowFlash] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
 
-  const totalPhotosToCapture = 4;
-  const requiredPhotos = layout === "single" ? 9 : 6;
+  const totalPhotosToCapture = 9;
+  const requiredPhotos = layout === "single" ? 4 : 3;
 
   // Request camera permission
   useEffect(() => {
