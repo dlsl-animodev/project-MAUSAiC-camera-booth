@@ -31,7 +31,7 @@ const FloatingBubble = ({
   />
 );
 
-export type FrameType = "frame1" | "frame2" | "frame3" | "frame4";
+export type FrameType = "frame2" | "frame3" | "frame4" | "frame5";
 
 interface FrameConfig {
   name: string;
@@ -50,15 +50,15 @@ interface FrameConfig {
 // Frame configurations - positions are percentages
 // 2x6 inches at 300 DPI = 600x1800 pixels
 export const frames: Record<FrameType, FrameConfig> = {
-  frame1: {
+  frame5: {
     name: "Classic 1",
-    src: "/PhotostripsArtboard-1.png",
-    slots: 4,
+    src: "/Photostripsnew.png",
+    slots: 5,
     photoPositions: [
-      { top: 4.5, left: 6.5, width: 87, height: 17.5 },
-      { top: 23.7, left: 6.5, width: 87, height: 17.5 },
-      { top: 42.7, left: 6.5, width: 87, height: 17.5 },
-      { top: 61.7, left: 6.5, width: 87, height: 17.5 },
+      { top: 2.2, left: 6.2, width: 87.1, height: 23.3 },
+      { top: 26.2, left: 6.2, width: 87.1, height: 23.3 },
+      { top: 50.2, left: 6.2, width: 87.1, height: 23.3 },
+      { top: 74.4, left: 6.2, width: 87.1, height: 23.3 },
     ],
   },
   frame2: {
@@ -88,10 +88,10 @@ export const frames: Record<FrameType, FrameConfig> = {
     src: "/PhotostripsArtboard 4.jpg",
     slots: 4,
     photoPositions: [
-      { top: 1.9, left: 6.2, width: 87.1, height: 23.3 },
-      { top: 25.9, left: 6.2, width: 87.1, height: 23.3 },
-      { top: 49.95, left: 6.2, width: 87.1, height: 23.3 },
-      { top: 74.1, left: 6.2, width: 87.1, height: 23.3 },
+      { top: 1.9, left: 6.4, width: 87.1, height: 23.3 },
+      { top: 25.9, left: 6.4, width: 87.1, height: 23.3 },
+      { top: 49.95, left: 6.4, width: 87.1, height: 23.3 },
+      { top: 74, left: 6.4, width: 87.1, height: 23.3 },
     ],
   },
 };
@@ -103,7 +103,7 @@ const getAvailableFrames = (layout: "single" | "double"): FrameType[] => {
     return ["frame3"];
   } else {
     // Only 4-slot frames for single/classic layout
-    return ["frame1", "frame2", "frame4"];
+    return ["frame5", "frame4", "frame2"];
   }
 };
 
