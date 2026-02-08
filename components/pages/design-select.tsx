@@ -103,7 +103,7 @@ const getAvailableFrames = (layout: "single" | "double"): FrameType[] => {
     return ["frame3"];
   } else {
     // Only 4-slot frames for single/classic layout
-    return ["frame5", "frame4", "frame2"];
+    return ["frame5", "frame2", "frame4"];
   }
 };
 
